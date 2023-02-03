@@ -1,7 +1,7 @@
 ---
 title: "Example Manuscript Template for a Data Analysis Project"
 subtitle: ""
-author: Andreas Handel
+author: Annabella Hines
 date: "`r Sys.Date()`"
 format:
   docx:
@@ -12,9 +12,6 @@ bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
 ---
 
-The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. 
-You don't need to have exactly these sections, but the content covering those sections should be addressed.
-
 This uses MS Word as output format. [See here](https://quarto.org/docs/output-formats/ms-word.html) for more information. You can switch to other formats, like html or pdf. See [the Quarto documentation](https://quarto.org/) for other formats.
 
 
@@ -22,6 +19,7 @@ This uses MS Word as output format. [See here](https://quarto.org/docs/output-fo
 # load a few R packages
 library(here)
 library(knitr)
+library(tidyverse)
 ```
 
 
@@ -36,13 +34,25 @@ _Write a summary of your project._
 # Introduction 
 
 ## General Background Information
-_Provide enough background on your topic that others can understand the why and how of your analysis_ 
+
+Many factors can play a part in life expectancy in different countries from availablity of medical care and vaccines to mental health and happiness.
 
 ## Description of data and data source
-_Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section._
+I decided to combine two datasets, one is a life expectancy dataset collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunizations and the human development index for each country along with their life expectancy. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year.
+```{r}
+#load in each dataset
+lifeexp<- read_csv("../../data/raw_data/Life Expectancy Data.csv")
+riskfactor<- read_csv("../../data/raw_data/number-of-deaths-by-risk-factor.csv")
+#glimpse of each
+glimpse(lifeexp)
+glimpse(riskfactor)
+```
+Above shows a quick overview of some of the variables in each dataset. There is a broad range of information that could be investigated for correlations to life expectancy.
+
 
 ## Questions/Hypotheses to be addressed
-_State the research questions you plan to answer with this analysis._
+Is there a correlation between certain risk factors and lower life expectancies by country? Have there been any specific trends over the years in which risk factors have become more prevalent? 
+
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
 
