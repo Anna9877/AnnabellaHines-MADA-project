@@ -1,0 +1,106 @@
+---
+title: "Cleaning and Processing Data"
+author: "Annabella Hines"
+date: "2023-02-24"
+output: html_document
+---
+
+
+# Processing script
+
+
+
+
+# Setup
+
+Load needed packages. make sure they are installed.
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+# Data loading
+
+```{r}
+#Path to data.
+data_location <- here::here("data","raw_data","Life Expectancy Data.csv")
+data_location2 <- here::here("data", "raw_data", "number-of-deaths-by-risk-factor.csv")
+#load data
+lifeexp <- read.csv(data_location)
+riskfactor <- read.csv(data_location2)
+```
+
+
+# Check data
+
+
+```{r}
+glimpse(lifeexp)
+glimpse(riskfactor)
+```
+
+
+
+# Cleaning
+
+First we'll rename some variables to make the names clearer and more ubiquitous between the data sets.
+```{r}
+#rename columns
+riskfactor <- rename(riskfactor, Country = Entity)
+lifeexp<-rename(lifeexp, Infant.deaths = infant.deaths, Percentage.expenditure = percentage.expenditure, Under.five.deaths = under.five.deaths, Thinness.Age1to19 = thinness..1.19.years, Thinness.Age5to9 = thinness.5.9.years, Years.of.education = Schooling)
+```
+
+Next I want to check the year ranges for each set to make sure they match and alter them if need be.
+```{r}
+riskfactor %>% pull(Year) %>% range()
+#1990 to 2017
+lifeexp %>% pull(Year) %>% range()
+#2000 to 2015
+#filter riskfactor to only include years from 2000 to 2015 to match with available years in lifeexp data set
+riskfactor <- filter(riskfactor, between(Year, 2000, 2015))
+```
+
+Next we'll check for any missing data.
+```{r}
+#check for number of NA's by columns
+missing.values <- lifeexp %>%
+    gather(key = "key", value = "val") %>%
+    mutate(is.missing = is.na(val)) %>%
+    group_by(key, is.missing) %>%
+    summarise(num.missing = n()) %>%
+    filter(is.missing==T) %>%
+    select(-is.missing) %>%
+    arrange(desc(num.missing)) 
+missing.values
+#make a graph to visualize
+missing.values %>%
+  ggplot() +
+    geom_bar(aes(x=key, y=num.missing), stat = 'identity') +
+    labs(x='Variable', y="Number of Missing Values", title='Number of Missing Values')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+It looks like the population variable has the most missing values but in the context of the entire dataset it is about 600 out of 2938 observations and it can always be extrapolated from other sources if it becomes necessary to the analysis, along with GDP.
+
+
+I'll assign the final products to a variable to be able to edit the above code if needed.
+```{r}
+processeddata_lifeexp <- lifeexp
+processeddata_riskfactor <- riskfactor
+```
+
+
+# Save data 
+
+```{r}
+lifeexp_data_location <- here::here("data","processed_data","processeddata_life.rds")
+saveRDS(processeddata_lifeexp, file = lifeexp_data_location)
+riskfactor_data_location <- here::here("data","processed_data","processeddata_risk.rds")
+saveRDS(processeddata_riskfactor, file = riskfactor_data_location)
+```
+
+
+
+

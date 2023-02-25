@@ -1,29 +1,9 @@
 ---
-title: "An example exploratory analysis script"
-author: "Andreas Handel"
-date: "10/28/2021"
+title: "Data Cleaning and Exploratory Analysis"
+author: "Annabella Hines"
+date: "2023-02-24"
 output: html_document
 ---
-
-  
-  
-This Quarto file loads the cleaned data and does some exploring.
-
-I'm only showing it the way where the code is included in the file. 
-As described in the `processing_code` materials, I currently prefer the approach of having R code in a separate file and pulling it in.
-
-But I already had this written and haven't yet re-done it that way. Feel free to redo and send a pull request on GitHub :)
-
-Again, it is largely a matter of preference and what makes the most sense to decide if one wants to have code inside Quarto files, or as separate R files.
-And sometimes, an R script with enough comments is good enough and one doesn't need a Quarto file.
-
-Also note that while here I split cleaning and exploring, this is iterative. You saw that as part of the processing, we already had to explore the data somewhat to understand how to clean it. In general, as you explore, you'll find things that need cleaning. As you clean, you can explore more. Therefore, at times it might make more sense to combine the cleaning and exploring code parts into a single R or Quarto file. Or split things in any other logical way.
-
-As part of the exploratory analysis, you should produce plots or tables or other summary quantities for the most interesting/important quantities in your data. Depending on the total number of variables in your dataset, explore all or some of the others. Figures produced here might be histograms or density plots, correlation plots, etc. Tables might summarize your data.
-
-Start by exploring one variable at a time. Then continue by creating plots or tables of the outcome(s) of interest and the predictor/exposure/input variables you are most interested in. If your dataset is small, you can do that for all variables. 
-
-Plots produced here can be scatterplots, boxplots, violinplots, etc. Tables can be simple 2x2 tables or larger ones.
 
 # Setup
 
@@ -36,40 +16,37 @@ library(ggplot2)
 ```
 
 
-Load the data.
+## Load the data.
 
 ```{r}
-#Path to data. Note the use of the here() package and not absolute paths
-data_location <- here::here("data","processed_data","processeddata.rds")
+#Path to data.
+life_data_location <- here::here("data","processed_data","processeddata_life.rds")
+risk_data_location <- here::here("data","processed_data","processeddata_risk.rds")
 #load data
-mydata <- readRDS(data_location)
+life <- readRDS(life_data_location)
+risk <- readRDS(risk_data_location)
 ```
-
-
-
 
 
 # Data exploration through tables
 
-Showing a bit of code to produce and save a summary table.
-
+First we'll use some code to produce and save a summary table for each data set.
 
 ```{r}
-summary_df = skimr::skim(mydata)
-print(summary_df)
+summary_lifeexp <- skimr::skim(life)
+print(summary_lifeexp)
+summary_riskfactor <- skimr::skim(risk)
+print(summary_riskfactor)
 # save to file
-summarytable_file = here("results", "summarytable.rds")
-saveRDS(summary_df, file = summarytable_file)
+summarytable_lifeexp = here("results", "summarytablelifeexp.rds")
+saveRDS(summary_lifeexp, file = summarytable_lifeexp)
+summarytable_riskfactor = here("results", "summarytableriskfactor.rds")
+saveRDS(summary_riskfactor, file = summarytable_riskfactor)
 ```
-
-We are saving the results to the `results` folder. Depending on how many tables/figures you have, it might make sense to have separate folders for each. And/or you could have separate folders for exploratory tables/figures and for final tables/figures. Just choose a setup that makes sense for your project and works for you, and provide enough documentation that someone can understand what you are doing.
 
 
 # Data exploration through figures
 
-Histogram plots for the continuous outcomes. 
-
-Height first.
 
 ```{r}
 p1 <- mydata %>% ggplot(aes(x=Height)) + geom_histogram() 
