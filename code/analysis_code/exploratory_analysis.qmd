@@ -47,39 +47,44 @@ saveRDS(summary_riskfactor, file = summarytable_riskfactor)
 
 # Data exploration through figures
 
+First a quick look at Adult mortality and infant mortality plotted against life expectancy.
+```{r}
+##Plot of adult mortality vs life expectancy with point size correlated to infant deaths and color to status of country
+ggplot(life, aes(x=Adult.Mortality, y=Life.expectancy, size=Infant.deaths, color=Status))+geom_point()+geom_jitter()
+#Same variables but for the year 2000
+filter(life, Year==2000) %>% ggplot(aes(x=Adult.Mortality, y=Life.expectancy, size=Infant.deaths, color=Status))+geom_point()+geom_jitter()
+#Same variables but for 2015
+filter(life, Year==2015) %>% ggplot(aes(x=Adult.Mortality, y=Life.expectancy, color=Status, size=Infant.deaths))+geom_point()+geom_jitter()
+```
+The trends appear to have stayed fairly consistent throughout the period with a higher life expectancy associated with lower adult and infant mortality and being classified as a developed nation.
 
 ```{r}
-p1 <- mydata %>% ggplot(aes(x=Height)) + geom_histogram() 
-plot(p1)
-figure_file = here("results","height_distribution.png")
-ggsave(filename = figure_file, plot=p1) 
+combo <- right_join(life, risk, by=c("Country", "Year"))
+filter(combo, Year==c(2000, 2015)) %>% ggplot(aes(x=Air.pollution, y=Life.expectancy, color=Year))+geom_point()
+
+```
+```{r}
+ggplot(life, aes(x=Year, y=Polio, color=Status))+geom_point()
 ```
 
-Now weights.
 
 ```{r}
-p2 <- mydata %>% ggplot(aes(x=Weight)) + geom_histogram() 
+p1 <- life %>% filter(Year==2000) %>% ggplot(aes(x=Status, y=Life.expectancy)) + geom_boxplot() 
+plot(p1)
+figure_file = here("results","")
+ggsave(filename = figure_file, plot=p1) 
+```
+Developed countries have an on average higher life expectancy distribution than developing countries.
+
+
+```{r}
+p2 <- mydata %>% ggplot(aes 
 plot(p2)
-figure_file = here("results","weight_distribution.png")
+figure_file = here("results",".png")
 ggsave(filename = figure_file, plot=p2) 
 ```
 
-Now height as function of weight.
 
-```{r}
-p3 <- mydata %>% ggplot(aes(x=Height, y=Weight)) + geom_point() + geom_smooth(method='lm')
-plot(p3)
-figure_file = here("results","height_weight.png")
-ggsave(filename = figure_file, plot=p3) 
-```
-
-Once more height as function of weight, stratified by gender. Note that there is so little data, it's a bit silly. But we'll plot it anyway.
-
-```{r}
-p4 <- mydata %>% ggplot(aes(x=Height, y=Weight, color = Gender)) + geom_point() + geom_smooth(method='lm')
-plot(p4)
-figure_file = here("results","height_weight_stratified.png")
-ggsave(filename = figure_file, plot=p4) 
 ```
 
 

@@ -53,10 +53,6 @@ Above shows a quick overview of some of the variables in each dataset. There is 
 Is there a correlation between certain risk factors and lower life expectancies by country? Have there been any specific trends over the years in which risk factors have become more prevalent? 
 
 
-To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
-
-Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a]
-
 {{< pagebreak >}}
 
 
@@ -64,9 +60,6 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 
 _Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
 
-
-## Data aquisition
-_As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next._
 
 
 ## Data import and cleaning
