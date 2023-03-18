@@ -9,10 +9,12 @@ output: html_document
 
 ```{r}
 #load needed packages. make sure they are installed.
-library(here) #for data loading/saving
+library(here)
 library(dplyr)
 library(skimr)
 library(ggplot2)
+library(tidymodels)
+library(tidyverse)
 ```
 
 
@@ -20,10 +22,15 @@ library(ggplot2)
 
 ```{r}
 #Path to data.
+
 life_data_location <- here::here("data","processed_data","processeddata_life.rds")
+
 risk_data_location <- here::here("data","processed_data","processeddata_risk.rds")
+
 #load data
+
 life <- readRDS(life_data_location)
+
 risk <- readRDS(risk_data_location)
 ```
 
@@ -34,14 +41,23 @@ First we'll use some code to produce and save a summary table for each data set.
 
 ```{r}
 summary_lifeexp <- skimr::skim(life)
+
 print(summary_lifeexp)
+
 summary_riskfactor <- skimr::skim(risk)
+
 print(summary_riskfactor)
+
 # save to file
+
 summarytable_lifeexp = here("results", "summarytablelifeexp.rds")
+
 saveRDS(summary_lifeexp, file = summarytable_lifeexp)
+
 summarytable_riskfactor = here("results", "summarytableriskfactor.rds")
+
 saveRDS(summary_riskfactor, file = summarytable_riskfactor)
+
 ```
 
 
@@ -63,27 +79,61 @@ combo <- right_join(life, risk, by=c("Country", "Year"))
 filter(combo, Year==c(2000, 2015)) %>% ggplot(aes(x=Air.pollution, y=Life.expectancy, color=Year))+geom_point()
 
 ```
+I need to rework this one
 ```{r}
-ggplot(life, aes(x=Year, y=Polio, color=Status))+geom_point()
+filter(life, Year==2015) %>% select(Under.five.deaths, Country)
+filter(life, Year==2015) %>% select(Under.five.deaths, Country) %>% top_n(Under.five.deaths, n=5)
+filter(life, Year==2015) %>% select(Under.five.deaths, Country) %>% top_n(Under.five.deaths, n=-5)
+filter(life, Year==2015) %>% filter(Country%in%c("Democratic Republic of the Congo", "Ethiopia", "India", "Nigeria", "Pakistan", "Austria", "Albania", "Belize" )) %>% ggplot(aes(x=Country, y=Under.five.deaths, color=Status))+geom_point()
+```
+
+
+```{r}
+ggplot(life, aes(x=Status, y=Polio))+geom_boxplot()
 ```
 
 
 ```{r}
 p1 <- life %>% filter(Year==2000) %>% ggplot(aes(x=Status, y=Life.expectancy)) + geom_boxplot() 
+
 plot(p1)
-figure_file = here("results","")
+
+figure_file = here("results","LifeExpectancyStatusBoxPlot.png")
+
 ggsave(filename = figure_file, plot=p1) 
 ```
 Developed countries have an on average higher life expectancy distribution than developing countries.
 
-
 ```{r}
-p2 <- mydata %>% ggplot(aes 
+p2 <- ggplot(riskUS, aes(x=Year))+geom_point(aes(y=Unsafe.sanitation), color="blue")+geom_point(aes(y=Unsafe.water.source),color="darkgreen")+ylab("Deaths Due to Unsafe Water Source, Unsafe Sanitation, or No Access to Handwashing Facilities in the US")+geom_point(aes(y=No.access.to.handwashing.facility), color="red")
 plot(p2)
-figure_file = here("results",".png")
+
+figure_file = here("results","WaterriskUS.png")
+
 ggsave(filename = figure_file, plot=p2) 
 ```
 
+
+```{r}
+lm_mod <- linear_reg() %>% set_engine("lm")
+fitlm1 <- lm_mod %>%
+  fit(Life.expectancy ~ Year, data=life)
+#checking results
+fitlm1
+tidy(fitlm1)
+```
+Year seemed to be positively correlated with life expectancy.
+
+```{r}
+life$Status <- as.factor(life$Status)
+glimpse(life)
+glm_mod <- logistic_reg() %>% set_engine("glm")
+fluglm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=life)
+#checking results
+tidy(fluglm1)
+```
+
+```{r}
 
 ```
 
