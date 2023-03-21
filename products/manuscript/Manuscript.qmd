@@ -77,6 +77,26 @@ _Explain anything related to your statistical analyses._
 
 ## Exploratory/Descriptive analysis
 
+First, here are summary tables for each dataset to see an overview of the data.
+
+```{r}
+#Risk factor dataset summary table
+readRDS(summarytable_riskfactor)
+```
+```{r}
+#Life expectancy dataset summary table.
+readRDS(summarytable_lifeexp)
+```
+
+
+
+```{r}
+#Plot of Life Expectancy and Adult mortality in 2000
+p1_2000
+#Plot of Life Expectancy and Adult mortality in 2015
+p2_2015
+```
+
 _Use a combination of text/tables/figures to explore and describe your data. Show the most important descriptive results here. Additional ones should go in the supplement. Even more can be in the R and Quarto files that are part of your project._
 
 

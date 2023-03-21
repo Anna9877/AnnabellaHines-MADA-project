@@ -215,7 +215,7 @@ tidy(fitlm2)
 ```{r}
 fitlm3 <- lm_mod %>% fit(Life.expectancy~., data=life)
 fitlm3
-tidy(fitlm3)
+tidy(fitlm)
 ```
 
 
