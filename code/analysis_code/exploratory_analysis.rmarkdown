@@ -162,7 +162,7 @@ p2 <- ggplot(riskUS, aes(x=Year))+
 
 plot(p2)
 
-figure_file = here("results","weight_distribution.png")
+figure_file = here("results",".png")
 
 ggsave(filename = figure_file, plot=p2) 
 

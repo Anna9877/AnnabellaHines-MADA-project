@@ -63,7 +63,7 @@ saveRDS(summary_riskfactor, file = summarytable_riskfactor)
 
 # Data exploration through figures
 
-First a quick look at Adult mortality and infant mortality plotted against life expectancy.
+First a quick look at Adult mortality and infant mortality plotted against life expectancy while also representing development status.
 ```{r}
 ##Plot of adult mortality vs life expectancy with point size correlated to infant deaths and color to status of country
 ggplot(life, aes(x=Adult.Mortality, y=Life.expectancy, size=Infant.deaths, color=Status))+geom_point()+geom_jitter()
@@ -76,28 +76,29 @@ ggsave(filename = plot1, plot=p1_2000)
 p2_2015<-filter(life, Year==2015) %>% ggplot(aes(x=Adult.Mortality, y=Life.expectancy, color=Status, size=Infant.deaths))+geom_point()+geom_jitter()+ylab("Life Expectancy")+ xlab("Adult Mortality")+labs(title="Life Expectancy vs Adult Mortality with Infant Deaths and Country Status 2015")
 #save plot.
 plot2 = here("results","p2_2015.png")
-ggsave(filename = plot2, plot=p2_2015) 
+ggsave(filename = plot2, plot=p2_2015)
 ```
-The trends appear to have stayed fairly consistent throughout the period with a higher life expectancy associated with lower adult and infant mortality and being classified as a developed nation.
+The trends appear to have stayed fairly consistent throughout the period from 2000 to 2015 with a higher life expectancy associated with lower adult and infant mortality and being classified as a developed nation.
 
 ```{r}
-combo <- right_join(life, risk, by=c("Country", "Year"))
-filter(combo, Year==c(2000, 2015)) %>% ggplot(aes(x=Air.pollution, y=Life.expectancy, color=Year))+geom_point()
-
+combo <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2015)
+ggplot(combo, aes(x=GDP, y=Life.expectancy, color=Status))+geom_point()
 ```
-I need to rework this one
+Here is life expectancy against GDP in 2015, which has a lot of variation in life expectancy when GDP is less that 10000. Once past that threshold, the life expectancies remain in the high range.
+
+Next I wanted to look at some vaccination rates in comparison to other factors.
 ```{r}
-filter(life, Year==2015) %>% select(Under.five.deaths, Country)
-filter(life, Year==2015) %>% select(Under.five.deaths, Country) %>% top_n(Under.five.deaths, n=5)
-filter(life, Year==2015) %>% select(Under.five.deaths, Country) %>% top_n(Under.five.deaths, n=-5)
-filter(life, Year==2015) %>% filter(Country%in%c("Democratic Republic of the Congo", "Ethiopia", "India", "Nigeria", "Pakistan", "Austria", "Albania", "Belize" )) %>% ggplot(aes(x=Country, y=Under.five.deaths, color=Status))+geom_point()
+##Hepatitis.B, Polio, Diptheria
+ggplot(combo, aes(y=Life.expectancy, x=Hepatitis.B))+geom_point()+geom_smooth()
+ggplot(combo, aes(y=Life.expectancy, x=Polio))+geom_point()+geom_smooth()
+ggplot(combo, aes(y=Life.expectancy, x=Diphtheria))+geom_point()+geom_smooth()
 ```
-
+The vaccination rates are difficult to visualize a trend for as most countries seem to have high vaccination rates, so I added trend lines. They all were very similar in shape with a rise in life expectancy at rates over 85 percent coverage.
 
 ```{r}
 ggplot(life, aes(x=Status, y=Polio))+geom_boxplot()
 ```
-
+Taking Polio vaccination rates as an example, developed countries have a much smaller distribution with higher coverage than developing countries that are much more varied.
 
 ```{r}
 p1 <- life %>% filter(Year==2000) %>% ggplot(aes(x=Status, y=Life.expectancy, fill=Status)) + geom_boxplot()+ylab("Life Expectancy")+xlab("Development Status")+labs(title="Life Expectancy Distribution by Development Status")
@@ -158,5 +159,11 @@ tidy(fitlm3)
 fitlm4 <- lm_mod %>% fit(Child.wasting~Non.exclusive.breastfeeding+Discontinued.breastfeeding, data=risk)
 fitlm4
 tidy(fitlm4)
+```
+
+```{r}
+fitlm5<-lm_mod %>% fit(Infant.deaths~Hepatitis.B+Polio+Diphtheria+Low.birth.weight.for.gestation, data=combo)
+fitlm5
+tidy(fitlm5)
 ```
 
