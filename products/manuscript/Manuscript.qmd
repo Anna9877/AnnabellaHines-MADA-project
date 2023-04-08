@@ -8,7 +8,7 @@ format:
     toc: false
     number-sections: true
     highlight-style: github
-bibliography: ../dataanalysis_template_references.bib
+bibliography: ../references.bib
 csl: ../apa.csl
 ---
 
@@ -34,10 +34,11 @@ _Write a summary of your project._
 
 ## General Background Information
 
-Many factors can play a part in life expectancy in different countries from availablity of medical care and vaccines to mental health and happiness.
+Many factors can play a part in life expectancy in different countries from availability of medical care and vaccines to mental health and happiness.Factors may differ in the weight of their effect depending on developmental status of the country as well [@Kabir_2008].
 
 ## Description of data and data source
-I decided to combine two datasets, one is a life expectancy dataset collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunizations and the human development index for each country along with their life expectancy. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year.
+I decided to analyze two data sets, one is a life expectancy data set collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunization rates and the human development index for each country along with their overall life expectancy from. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year. Some examples include unsafe water sources and hygiene, child wasting and thinness, lifestyle and behavioral factors, and pollution.
+
 ```{r}
 #load in each dataset
 lifeexp<- read_csv("../../data/raw_data/Life Expectancy Data.csv")
@@ -158,13 +159,7 @@ _Discuss what you perceive as strengths and limitations of your analysis._
 ## Conclusions
 _What are the main take-home messages?_
 
-_Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end_
 
-This paper [@leek2015] discusses types of analyses. 
-
-These papers [@mckay2020; @mckay2020a] are good examples of papers published using a fully reproducible setup similar to the one shown in this template. 
-
-Note that this cited reference will show up at the end of the document, the reference formatting is determined by the CSL file specified in the YAML header. Many more style files for almost any journal [are available](https://www.zotero.org/styles). You also specify the location of your bibtex reference file in the YAML. You can call your reference file anything you like, I just used the generic word `references.bib` but giving it a more descriptive name is probably better.
 
 
 {{< pagebreak >}}
