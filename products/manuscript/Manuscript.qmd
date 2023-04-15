@@ -8,8 +8,7 @@ format:
     toc: false
     number-sections: true
     highlight-style: github
-bibliography: ../references.bib
-csl: ../apa.csl
+bibliography: ../../references.bib
 ---
 
 ## Load Required Packages
@@ -82,11 +81,9 @@ First, here are summary tables for each dataset to see an overview of the data.
 
 ```{r}
 #Risk factor dataset summary table
-readRDS(summarytable_riskfactor)
 ```
 ```{r}
 #Life expectancy dataset summary table.
-readRDS(summarytable_lifeexp)
 ```
 
 
@@ -120,28 +117,18 @@ knitr::include_graphics(here("results","LifeExpectancyStatusBoxPlot.png"))
 _To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
 
 
-@fig-result shows a scatterplot figure produced by one of the R scripts.
+ shows a scatterplot figure produced by one of the R scripts.
 
-```{r}
-#| label: fig-result
-#| fig-cap: "Height and weight stratified by gender."
-#| echo: FALSE
-knitr::include_graphics(here("results","height_weight_stratified.png"))
-```
 
 
 ## Full analysis
 
 _Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here._
 
-Example @tbl-resulttable2 shows a summary of a linear model fit.
+Example  shows a summary of a linear model fit.
 
 ```{r}
-#| label: tbl-resulttable2
-#| tbl-cap: "Linear model fit table."
-#| echo: FALSE
-resulttable2 = readRDS(here("results","resulttable2.rds"))
-knitr::kable(resulttable2)
+
 ```
 
 
