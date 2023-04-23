@@ -82,6 +82,7 @@ The trends appear to have stayed fairly consistent throughout the period from 20
 
 ```{r}
 #comparing life expectancy to GDP in 2015
+combo_both <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==c(2000, 2015)) %>% drop_na(Status)
 combo_2015 <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2015)
 combo_2000 <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2000)
 ggplot(combo_2015, aes(x=GDP, y=Life.expectancy, color=Status))+geom_point()
@@ -91,12 +92,18 @@ Here is life expectancy against GDP in 2015, which has a lot of variation in lif
 
 Next I wanted to look at some vaccination rates in comparison to life expectancy.
 ```{r}
-##Hepatitis.B
-ggplot(combo, aes(y=Life.expectancy, x=Hepatitis.B))+geom_point()+geom_smooth()
-#Polio
-ggplot(combo, aes(y=Life.expectancy, x=Polio))+geom_point()+geom_smooth()
-#Diptheria
-ggplot(combo, aes(y=Life.expectancy, x=Diphtheria))+geom_point()+geom_smooth()
+##Hepatitis.B 2015
+ggplot(combo_2015, aes(y=Life.expectancy, x=Hepatitis.B))+geom_point()+geom_smooth()
+##Hepatitis.B 2000
+ggplot(combo_2000, aes(y=Life.expectancy, x=Hepatitis.B))+geom_point()+geom_smooth()
+#Polio 2015
+ggplot(combo_2015, aes(y=Life.expectancy, x=Polio))+geom_point()+geom_smooth()
+#Polio 2000
+ggplot(combo_2000, aes(y=Life.expectancy, x=Polio))+geom_point()+geom_smooth()
+#Diptheria 2015
+ggplot(combo_2015, aes(y=Life.expectancy, x=Diphtheria))+geom_point()+geom_smooth()
+#Diptheria 2000
+ggplot(combo_2000, aes(y=Life.expectancy, x=Diphtheria))+geom_point()+geom_smooth()
 ```
 The vaccination rates are difficult to visualize a trend for as most countries seem to have high vaccination rates, so I added trend lines. They all were very similar in shape with a rise in life expectancy at rates over 85 percent coverage.
 
@@ -106,23 +113,37 @@ ggplot(life, aes(x=Status, y=Polio))+geom_boxplot()
 Taking Polio vaccination rates as an example, developed countries have a much smaller distribution with higher coverage than developing countries that are much more varied.
 
 ```{r}
-p1 <- life %>% filter(Year==2000) %>% ggplot(aes(x=Status, y=Life.expectancy, fill=Status)) + geom_boxplot()+ylab("Life Expectancy")+xlab("Development Status")+labs(title="Life Expectancy Distribution by Development Status")
+p1_2000 <- life %>% filter(Year==2000) %>% ggplot(aes(x=Status, y=Life.expectancy, fill=Status)) + geom_boxplot()+ylab("Life Expectancy")+xlab("Development Status")+labs(title="Life Expectancy Distribution by Development Status in 2000")
+p1_2015 <- life %>% filter(Year==2015) %>% ggplot(aes(x=Status, y=Life.expectancy, fill=Status)) + geom_boxplot()+ylab("Life Expectancy")+xlab("Development Status")+labs(title="Life Expectancy Distribution by Development Status in 2015")
 
-plot(p1)
+plot(p1_2000)
+plot(p1_2015)
 
-figure_file = here("results","LifeExpectancyStatusBoxPlot.png")
+figure_file = here("results","LifeExpectancyStatusBoxPlot2000.png")
 
-ggsave(filename = figure_file, plot=p1) 
+ggsave(filename = figure_file, plot=p1_2000) 
+
+figure_file2 = here("results","LifeExpectancyStatusBoxPlot2015.png")
+
+ggsave(filename = figure_file2, plot=p1_2015) 
+
+##combine both plots with facet_wrap
+sc <- ggplot(combo, aes(Status, Life.expectancy, fill=Status)) +geom_boxplot()+facet_wrap(vars(Year))
+
+figure_file3 = here("results","LifeExpectancyStatusBoxPlotFull.png")
+
+ggsave(filename = figure_file3, plot=sc) 
 ```
 Developed countries have an on average higher life expectancy distribution than developing countries.
 
 ```{r}
-p2 <- ggplot(riskUS, aes(x=Year))+geom_point(aes(y=Unsafe.sanitation), color="blue")+geom_point(aes(y=Unsafe.water.source),color="darkgreen")+ylab("Deaths Due to Unsafe Water Source, Unsafe Sanitation, or No Access to Handwashing Facilities in the US")+geom_point(aes(y=No.access.to.handwashing.facility), color="red")
-plot(p2)
+riskUS <- filter(risk, Country=="United States")
+p3 <- ggplot(riskUS, aes(x=Year))+geom_point(aes(y=Unsafe.sanitation), color="blue")+geom_point(aes(y=Unsafe.water.source),color="darkgreen")+labs(title="Deaths Due to Unsafe Water Source, Unsafe Sanitation, or No Access to Handwashing Facilities in the US")+geom_point(aes(y=No.access.to.handwashing.facility), color="red")+ylab("Deaths")
+plot(p3)
 
-figure_file = here("results","WaterriskUS.png")
+figure_file4 = here("results","WaterriskUS.png")
 
-ggsave(filename = figure_file, plot=p2) 
+ggsave(filename = figure_file, plot=p3) 
 ```
 
 
