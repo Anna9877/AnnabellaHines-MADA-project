@@ -13,7 +13,7 @@ output: html_document
 
 # Setup
 
-Load needed packages. make sure they are installed.
+Load needed packages.
 
 ```{r}
 library(tidyverse)
@@ -60,6 +60,8 @@ lifeexp %>% pull(Year) %>% range()
 #2000 to 2015
 #filter riskfactor to only include years from 2000 to 2015 to match with available years in lifeexp data set
 riskfactor <- filter(riskfactor, between(Year, 2000, 2015))
+#confirm new range is correct
+riskfactor %>% pull(Year) %>% range()
 ```
 
 Next we'll check for any missing data.
@@ -82,7 +84,7 @@ missing.values %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-It looks like the population variable has the most missing values but in the context of the entire dataset it is about 600 out of 2938 observations and it can always be extrapolated from other sources if it becomes necessary to the analysis, along with GDP.
+It looks like the population variable has the most missing values but in the context of the entire dataset it is about 600 out of 2938 observations and it can always be extrapolated from other sources if it becomes necessary to the analysis, along with GDP. Ultimately, these variables are unlikely to be used in the analysis. 
 
 
 I'll assign the final products to a variable to be able to edit the above code if needed.

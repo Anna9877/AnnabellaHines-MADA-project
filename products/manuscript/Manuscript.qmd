@@ -50,7 +50,7 @@ Above shows a quick overview of some of the variables in each dataset. There is 
 
 
 ## Questions/Hypotheses to be addressed
-Is there a correlation between certain risk factors and lower life expectancies by country? Have there been any specific trends over the years in which risk factors have become more prevalent? 
+Which variables are the most highly correlated to life expectancy? Are there differences in the most associated factors between the years 2000 and 2015?
 
 
 {{< pagebreak >}}
@@ -81,9 +81,11 @@ First, here are summary tables for each dataset to see an overview of the data.
 
 ```{r}
 #Risk factor dataset summary table
+readRDS(summarytable_riskfactor)
 ```
 ```{r}
 #Life expectancy dataset summary table.
+readRDS(summarytable_lifeexp)
 ```
 
 

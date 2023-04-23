@@ -1,1 +1,1 @@
-This folder contains code for processing and cleaning the data.
+This folder contains code for the processing and cleaning of the data.

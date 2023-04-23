@@ -81,16 +81,21 @@ ggsave(filename = plot2, plot=p2_2015)
 The trends appear to have stayed fairly consistent throughout the period from 2000 to 2015 with a higher life expectancy associated with lower adult and infant mortality and being classified as a developed nation.
 
 ```{r}
-combo <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2015)
-ggplot(combo, aes(x=GDP, y=Life.expectancy, color=Status))+geom_point()
+#comparing life expectancy to GDP in 2015
+combo_2015 <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2015)
+combo_2000 <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2000)
+ggplot(combo_2015, aes(x=GDP, y=Life.expectancy, color=Status))+geom_point()
+ggplot(combo_2000, aes(x=GDP, y=Life.expectancy, color=Status))+geom_point()
 ```
 Here is life expectancy against GDP in 2015, which has a lot of variation in life expectancy when GDP is less that 10000. Once past that threshold, the life expectancies remain in the high range.
 
-Next I wanted to look at some vaccination rates in comparison to other factors.
+Next I wanted to look at some vaccination rates in comparison to life expectancy.
 ```{r}
-##Hepatitis.B, Polio, Diptheria
+##Hepatitis.B
 ggplot(combo, aes(y=Life.expectancy, x=Hepatitis.B))+geom_point()+geom_smooth()
+#Polio
 ggplot(combo, aes(y=Life.expectancy, x=Polio))+geom_point()+geom_smooth()
+#Diptheria
 ggplot(combo, aes(y=Life.expectancy, x=Diphtheria))+geom_point()+geom_smooth()
 ```
 The vaccination rates are difficult to visualize a trend for as most countries seem to have high vaccination rates, so I added trend lines. They all were very similar in shape with a rise in life expectancy at rates over 85 percent coverage.
