@@ -23,7 +23,7 @@ library(tidyverse)
 
 
 # Summary/Abstract
-_Write a summary of your project._
+With new unique risks arising to human health, along with older ones becoming less prevalent, the factors that tie in to life expectancy are changing over time. Broad vaccine coverage has virtually eliminated the presence of diseases like polio and measles in most developed countries and populations, while air pollution and poor nutrition/weight issues have become an increasing problem for many people. Through analysis of data collect by the World Health Organization on the most prevalent risk factors for death and average life expectancy for each country, I aim to draw initial associations that may be areas for further study or targets of public health measures.
 
 
 {{< pagebreak >}}
@@ -64,10 +64,10 @@ _Describe your methods. That should describe the data, the cleaning processes, a
 
 ## Data import and cleaning
 
-The cleaning of the raw data can be found in datacleaning.qmd file in the code folder and processing_code subfolder. I filtered down the risk factor data set to only include the years from 2000 to 2015 in order to match the life expectancy data. I also renamed variables in each set to make the information clearer or to better match each other.
+The cleaning of the raw data can be found in datacleaning.qmd file in the code folder and processing_code subfolder. I filtered down the risk factor data set to only include the years from 2000 to 2015 in order to match the life expectancy data. I also renamed variables in each set to make the information clearer and more ubiquitous.
 
 ## Statistical analysis
-_Explain anything related to your statistical analyses._
+Initially some generalized linear models were ran with all variables and with certain subsets of variables. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling.
 
 
 {{< pagebreak >}}
@@ -125,7 +125,7 @@ knitr::include_graphics(here("results","WaterriskUS.png"))
 _To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
 
 
- shows a scatterplot figure produced by one of the R scripts.
+
 
 
 
