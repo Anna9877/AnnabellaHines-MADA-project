@@ -196,14 +196,16 @@ tidy(fitlm6)
 
 ## Full analysis
 
-_Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here._
 
-Example  shows a summary of a linear model fit.
-
+Here is a decision tree model with the predictions for different stratum of life expectancy.
 ```{r}
-
+#Decision Tree Graphic
+#| label: fig-result5
+#| fig-cap: "Decision tree"
+#| echo: FALSE
+knitr::include_graphics(here("results","tree.png"))
 ```
-
+The initial split was on unsafe sanitation, with the split reported as yes further split with HIV and AIDS into the lower life expectancy strata. If there is no unsafe sanitation, it further is split into income composition of resources and then adult mortality. This a simpler and less nuanced model but has an overall look at the predictive value of the data. 
 
 {{< pagebreak >}}
 
