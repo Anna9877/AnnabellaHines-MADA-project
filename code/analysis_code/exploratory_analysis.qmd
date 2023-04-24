@@ -192,3 +192,74 @@ tidy(fitlm4)
 ```
 Measles does not seem to be correlated with life expectancy.
 
+##Machine Learning
+
+```{r}
+#setting seed for reproducibility
+set.seed(123)
+#Split data with 70% in the training set stratifying on life expectancy
+combo_split <- initial_split(data=combo_both, strata = Life.expectancy, prop=7/10)
+
+#Create data frames for the two sets:
+train_data <- training(combo_split)
+test_data  <- testing(combo_split)
+
+#Cross-validation
+resamples<-vfold_cv(data=train_data, v=10, repeats=10, strata=Life.expectancy)
+#Recipe
+combo_rec <- 
+  recipe(Life.expectancy ~ ., data = train_data) %>% step_dummy(all_nominal(), -all_outcomes())
+```
+
+```{r}
+#Null model recipe
+null_recipe <- recipe(Life.expectancy ~1, train_data) %>% step_dummy(all_nominal(), -all_outcomes())
+#regression model
+ln_mod <- linear_reg() %>% set_engine("lm") %>% set_mode("regression")
+#Workflow
+null_flow <- workflow() %>% add_model(ln_mod) %>% add_recipe(null_recipe)
+#Evaluate
+null_fit <- null_flow %>% fit(data=train_data) %>% fit_resamples(resamples=resamples)
+#collect metrics
+null_metrics<- collect_metrics(null_fit)
+null_metrics
+```
+
+## Fitting a Tree
+```{r}
+#Model Specification
+tune_spec <- 
+  decision_tree(
+    cost_complexity = tune(),
+    tree_depth = tune()
+  ) %>% 
+  set_engine("rpart") %>% 
+  set_mode("regression")
+#Grid specification
+tree_grid <- grid_regular(cost_complexity(),
+                          tree_depth(),
+                          levels = 5)
+#create workflow
+tree_wf <- workflow() %>%
+  add_model(tune_spec) %>%
+  add_recipe(combo_rec)
+#Tuning grid cross validation
+tree_res <- 
+  tree_wf %>% 
+  tune_grid(
+    resamples = resamples,
+    grid = tree_grid
+    )
+#get metrics
+tree_res %>% 
+  collect_metrics()
+#Plotting
+tree_res %>% autoplot()
+#Find and show best
+tree_res %>%
+  show_best(n=1)
+best_tree <- tree_res %>%
+  select_best(n=1)
+
+```
+

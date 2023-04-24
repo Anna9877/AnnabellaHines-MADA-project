@@ -18,6 +18,10 @@ bibliography: ../../references.bib
 library(here)
 library(knitr)
 library(tidyverse)
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(tidymodels)
 ```
 
 
@@ -40,8 +44,8 @@ I decided to analyze two data sets, one is a life expectancy data set collected 
 
 ```{r}
 #load in each dataset
-lifeexp<- read_csv("../../data/raw_data/Life Expectancy Data.csv")
-riskfactor<- read_csv("../../data/raw_data/number-of-deaths-by-risk-factor.csv")
+lifeexp <- readRDS("../../data/processed_data/processeddata_life.rds")
+riskfactor <- readRDS("../../data/processed_data/processeddata_risk.rds")
 #glimpse of each
 glimpse(lifeexp)
 glimpse(riskfactor)
@@ -81,11 +85,11 @@ First, here are summary tables for each data set to see an overview of the data.
 
 ```{r}
 #Risk factor dataset summary table
-readRDS(summarytable_riskfactor)
+readRDS(file = "../../results/summarytableriskfactor.rds")
 ```
 ```{r}
 #Life expectancy dataset summary table.
-readRDS(summarytable_lifeexp)
+readRDS("../../results/summarytablelifeexp.rds")
 ```
 
 
@@ -126,8 +130,9 @@ Here I explored some factors that would seem to be reasonably significant with s
 
 First, a logistic regression with country status and life expectancy.
 ```{r}
+lifeexp$Status <- as.factor(lifeexp$Status)
 glm_mod <- logistic_reg() %>% set_engine("glm")
-glm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=life)
+glm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=lifeexp)
 #checking results
 tidy(glm1)
 ```
@@ -137,7 +142,7 @@ Then a linear regression comparing year to life expectancy.
 ```{r}
 lm_mod <- linear_reg() %>% set_engine("lm")
 fitlm1 <- lm_mod %>%
-  fit(Life.expectancy ~ Year, data=life)
+  fit(Life.expectancy ~ Year, data=lifeexp)
 #checking results
 fitlm1
 tidy(fitlm1)
@@ -147,7 +152,7 @@ Year is positively correlated with life expectancy.
 Another linear regression with BMI.
 ```{r}
 fitlm2 <- lm_mod %>%
-  fit(Life.expectancy ~ BMI, data=life)
+  fit(Life.expectancy ~ BMI, data=lifeexp)
 #checking results
 fitlm2
 tidy(fitlm2)
@@ -155,7 +160,7 @@ tidy(fitlm2)
 In this instance, BMI is positively correlated with life expectancy.
 
 ```{r}
-fitlm3 <- lm_mod %>% fit(Life.expectancy~Polio, data=life)
+fitlm3 <- lm_mod %>% fit(Life.expectancy~Polio, data=lifeexp)
 fitlm3
 tidy(fitlm3)
 ```
@@ -163,7 +168,7 @@ Polio doesn't seem significantly correlated.
 
 ```{r}
 fitlm4 <- lm_mod %>%
-  fit(Life.expectancy ~ Measles, data=life)
+  fit(Life.expectancy ~ Measles, data=lifeexp)
 #checking results
 fitlm4
 tidy(fitlm4)
@@ -171,6 +176,7 @@ tidy(fitlm4)
 Measles does not seem significantly correlated with life expectancy.
 
 ```{r}
+combo_both <- right_join(lifeexp, riskfactor, by=c("Country", "Year")) %>% filter(Year==c(2000, 2015))
 fitlm5 <- lm_mod %>%
   fit(Life.expectancy ~ Air.pollution, data=combo_both)
 #checking results
@@ -208,7 +214,7 @@ Example  shows a summary of a linear model fit.
 _Summarize what you did, what you found and what it means._
 
 ## Strengths and Limitations
-_Discuss what you perceive as strengths and limitations of your analysis._
+Some strengths include how large and expansive the data set is, as it has many variables for nearly every country and with a large range of years. A weakness that goes along with that is that it was difficult to work with such a large data set and pick out what the most important things to explore were. Also life expectancy is a nuanced estimate that has to do with a combination of multiple factors and also things that are not included in the available data, so a truly accurate analysis may be out of my reach.
 
 ## Conclusions
 _What are the main take-home messages?_
