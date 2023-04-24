@@ -128,7 +128,7 @@ figure_file2 = here("results","LifeExpectancyStatusBoxPlot2015.png")
 ggsave(filename = figure_file2, plot=p1_2015) 
 
 ##combine both plots with facet_wrap
-sc <- ggplot(combo, aes(Status, Life.expectancy, fill=Status)) +geom_boxplot()+facet_wrap(vars(Year))
+sc <- ggplot(combo_both, aes(Status, Life.expectancy, fill=Status)) +geom_boxplot()+facet_wrap(vars(Year))
 
 figure_file3 = here("results","LifeExpectancyStatusBoxPlotFull.png")
 
@@ -155,7 +155,7 @@ fitlm1 <- lm_mod %>%
 fitlm1
 tidy(fitlm1)
 ```
-Year seemed to be positively correlated with life expectancy.
+Year seemed to be slightly positively correlated with life expectancy.
 
 ```{r}
 life$Status <- as.factor(life$Status)
@@ -165,6 +165,7 @@ glm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=life)
 #checking results
 tidy(glm1)
 ```
+This shows having the status of developing for a country is negatively correlated with life expectancy.
 
 ```{r}
 fitlm2 <- lm_mod %>%
@@ -176,20 +177,18 @@ tidy(fitlm2)
 
 
 ```{r}
-fitlm3 <- lm_mod %>% fit(Life.expectancy~., data=life)
+fitlm3 <- lm_mod %>% fit(Life.expectancy~Polio, data=life)
 fitlm3
 tidy(fitlm3)
 ```
+Polio does not seem significantly correlated. 
 
 ```{r}
-fitlm4 <- lm_mod %>% fit(Child.wasting~Non.exclusive.breastfeeding+Discontinued.breastfeeding, data=risk)
+fitlm4 <- lm_mod %>%
+  fit(Life.expectancy ~ Measles, data=life)
+#checking results
 fitlm4
 tidy(fitlm4)
 ```
-
-```{r}
-fitlm5<-lm_mod %>% fit(Infant.deaths~Hepatitis.B+Polio+Diphtheria+Low.birth.weight.for.gestation, data=combo)
-fitlm5
-tidy(fitlm5)
-```
+Measles does not seem to be correlated with life expectancy.
 

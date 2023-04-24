@@ -122,11 +122,70 @@ knitr::include_graphics(here("results","WaterriskUS.png"))
 
 ## Basic statistical analysis
 
-_To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
+Here I explored some factors that would seem to be reasonably significant with simple single predictor models to life expectancy, the outcome of interest. 
 
+First, a logistic regression with country status and life expectancy.
+```{r}
+glm_mod <- logistic_reg() %>% set_engine("glm")
+glm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=life)
+#checking results
+tidy(glm1)
+```
+Life expectancy is negatively correlated with the country status of `developing`.
 
+Then a linear regression comparing year to life expectancy.
+```{r}
+lm_mod <- linear_reg() %>% set_engine("lm")
+fitlm1 <- lm_mod %>%
+  fit(Life.expectancy ~ Year, data=life)
+#checking results
+fitlm1
+tidy(fitlm1)
+```
+Year is positively correlated with life expectancy.
 
+Another linear regression with BMI.
+```{r}
+fitlm2 <- lm_mod %>%
+  fit(Life.expectancy ~ BMI, data=life)
+#checking results
+fitlm2
+tidy(fitlm2)
+```
+In this instance, BMI is positively correlated with life expectancy.
 
+```{r}
+fitlm3 <- lm_mod %>% fit(Life.expectancy~Polio, data=life)
+fitlm3
+tidy(fitlm3)
+```
+Polio doesn't seem significantly correlated.
+
+```{r}
+fitlm4 <- lm_mod %>%
+  fit(Life.expectancy ~ Measles, data=life)
+#checking results
+fitlm4
+tidy(fitlm4)
+```
+Measles does not seem significantly correlated with life expectancy.
+
+```{r}
+fitlm5 <- lm_mod %>%
+  fit(Life.expectancy ~ Air.pollution, data=combo_both)
+#checking results
+fitlm5
+tidy(fitlm5)
+```
+Air pollution is negatively correlated with life expectancy.
+
+```{r}
+fitlm6 <- lm_mod %>%
+  fit(Life.expectancy ~ Low.physical.activity, data=combo_both)
+#checking results
+fitlm6
+tidy(fitlm6)
+```
 
 
 ## Full analysis
