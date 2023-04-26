@@ -62,8 +62,7 @@ Which variables are the most highly correlated to life expectancy? Are there dif
 
 # Methods 
 
-_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
-
+The data for each set was separated by country and year, with the metrics represented in either percentages or number per 100,000 people. The full explanation of each variable can be found in the supplementary material. Cleaning the data involved matching the years of both data sets and combining them, along with renaming certain variables for more clarification. The analysis starts with some simple one variable linear models focused on the association to the variable of interest, life expectancy. Then a few machine learning approaches were used, including the decision tree model.
 
 
 ## Data import and cleaning
