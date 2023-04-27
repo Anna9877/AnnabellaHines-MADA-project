@@ -1,0 +1,233 @@
+---
+title: "Statistical Analysis"
+author: "Annabella Hines"
+date: "2023-02-24"
+output: html_document
+---
+
+## Load Packages
+
+```{r}
+#load needed packages. make sure they are installed.
+library(here)
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(rpart)
+library(ranger)
+library(glmnet)
+library(vip)
+```
+
+## Load Data
+
+```{r}
+#Path to data.
+
+life_data_location <- here::here("data","processed_data","processeddata_life.rds")
+
+risk_data_location <- here::here("data","processed_data","processeddata_risk.rds")
+
+#load data
+
+life <- readRDS(life_data_location)
+
+risk <- readRDS(risk_data_location)
+```
+
+
+```{r}
+lm_mod <- linear_reg() %>% set_engine("lm")
+fitlm1 <- lm_mod %>%
+  fit(Life.expectancy ~ Year, data=life)
+#checking results
+fitlm1
+tidy(fitlm1)
+
+tidy(fitlm1)
+tidyfitlm1 <-tidy(fitlm1)
+fitlm1results = here("results", "tidyfitlm1.rds")
+
+saveRDS(tidyfitlm1, file = fitlm1results)
+```
+Year seemed to be slightly positively correlated with life expectancy.
+
+```{r}
+glm_mod <- logistic_reg() %>% set_engine("glm")
+glm1 <- glm_mod %>% fit(Status ~ Life.expectancy, data=life)
+#checking results
+tidy(glm1)
+tidyglm1 <-tidy(glm1)
+
+#save
+glm1results = here("results", "tidyglm1.rds")
+saveRDS(tidyglm1, file = glm1results)
+```
+This shows having the status of developing for a country is negatively correlated with life expectancy.
+
+
+```{r}
+fitlm2 <- lm_mod %>%
+  fit(Life.expectancy ~ BMI, data=life)
+#checking results
+fitlm2
+tidy(fitlm2)
+tidyfitlm2 <-tidy(fitlm2)
+
+#save results
+fitlm2results = here("results", "tidyfitlm2.rds")
+saveRDS(tidyfitlm2, file = fitlm2results)
+```
+
+
+
+```{r}
+fitlm3 <- lm_mod %>% fit(Life.expectancy~Polio, data=life)
+fitlm3
+tidy(fitlm3)
+tidyfitlm3 <-tidy(fitlm3)
+
+#save results
+fitlm3results = here("results", "tidyfitlm3.rds")
+saveRDS(tidyfitlm3, file = fitlm3results)
+```
+Polio does not seem significantly correlated.
+
+
+```{r}
+fitlm4 <- lm_mod %>%
+  fit(Life.expectancy ~ Measles, data=life)
+#checking results
+fitlm4
+tidy(fitlm4)
+
+#save results
+tidyfitlm4 <-tidy(fitlm4)
+fitlm4results = here("results", "tidyfitlm4.rds")
+
+saveRDS(tidyfitlm4, file = fitlm4results)
+
+```
+Measles does not seem to be correlated with life expectancy.
+
+
+```{r}
+combo_both <- right_join(lifeexp, riskfactor, by=c("Country", "Year")) %>% filter(Year==c(2000, 2015))
+fitlm5 <- lm_mod %>%
+  fit(Life.expectancy ~ Air.pollution, data=combo_both)
+#checking results
+fitlm5
+tidy(fitlm5)
+
+#save results
+tidyfitlm5 <-tidy(fitlm5)
+fitlm5results = here("results", "tidyfitlm5.rds")
+
+saveRDS(tidyfitlm5, file = fitlm5results)
+```
+
+
+```{r}
+fitlm6 <- lm_mod %>%
+  fit(Life.expectancy ~ Low.physical.activity, data=combo_both)
+#checking results
+fitlm6
+tidy(fitlm6)
+
+#save results
+tidyfitlm6 <-tidy(fitlm6)
+fitlm6results = here("results", "tidyfitlm6.rds")
+
+saveRDS(tidyfitlm6, file = fitlm6results)
+```
+
+
+##Machine Learning
+
+```{r}
+#Set seed and split data
+set.seed(123)
+combo_both <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==c(2000, 2015))
+
+combo_split <- initial_split(data=combo_both, strata = Life.expectancy, prop=7/10)
+
+train_data <- training(combo_split)
+test_data  <- testing(combo_split)
+
+#Cross-validation
+resamples<-vfold_cv(data=train_data, v=10, repeats=10, strata=Life.expectancy)
+
+combo_rec <- 
+  recipe(Life.expectancy ~ ., data = train_data) %>% step_dummy(all_nominal(), -all_outcomes())
+```
+
+
+##Null Model
+```{r}
+#Null model recipe
+null_recipe <- recipe(Life.expectancy ~1, train_data) %>% step_dummy(all_nominal(), -all_outcomes())
+
+ln_mod <- linear_reg() %>% set_engine("lm") %>% set_mode("regression")
+
+null_flow <- workflow() %>% add_model(ln_mod) %>% add_recipe(null_recipe)
+
+#Evaluate
+null_fit <- null_flow %>% fit(data=train_data) %>% fit_resamples(resamples=resamples)
+null_metrics<- collect_metrics(null_fit)
+null_metrics
+```
+
+
+## Fitting a Tree
+```{r}
+#Model Specification
+tune_spec <- 
+  decision_tree(
+    cost_complexity = tune(),
+    tree_depth = tune()
+  ) %>% 
+  set_engine("rpart") %>% 
+  set_mode("regression")
+
+tree_grid <- grid_regular(cost_complexity(),
+                          tree_depth(),
+                          levels = 5)
+#workflow
+tree_wf <- workflow() %>%
+  add_model(tune_spec) %>%
+  add_recipe(combo_rec)
+
+#Tuning grid cross validation
+tree_res <- 
+  tree_wf %>% 
+  tune_grid(
+    resamples = resamples,
+    grid = tree_grid
+    )
+
+tree_res %>% 
+  collect_metrics()
+
+tree_res %>% autoplot()
+
+tree_res %>%
+  show_best(n=1)
+best_tree <- tree_res %>%
+  select_best(n=1)
+#Finalize workflow and fit
+final_tree_wf <- 
+  tree_wf %>% 
+  finalize_workflow(best_tree)
+
+final_fit <- 
+  final_tree_wf %>%
+  last_fit(combo_split) 
+
+final_fit %>%
+  collect_metrics()
+rpart.plot(extract_fit_parsnip(final_fit)$fit)
+```
+
