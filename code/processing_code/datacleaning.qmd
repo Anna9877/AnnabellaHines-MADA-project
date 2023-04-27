@@ -87,6 +87,7 @@ missing.values %>%
 Also I'll coerce the status variable into the data class of factor to be more indicative of the actual data type.
 ```{r}
 lifeexp$Status <- as.factor(lifeexp$Status)
+glimpse(lifeexp)
 ```
 
 

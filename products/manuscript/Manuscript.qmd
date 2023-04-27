@@ -22,8 +22,8 @@ library(tidyverse)
 
 
 
-# Summary/Abstract
-With new unique risks arising to human health, along with older ones becoming less prevalent, the factors that tie in to life expectancy are changing over time. Broad vaccine coverage has virtually eliminated the presence of diseases like polio and measles in most developed countries and populations, while air pollution and poor nutrition/weight issues have become an increasing problem for many people. Through analysis of data collect by the World Health Organization on the most prevalent risk factors for death and average life expectancy for each country, I aim to draw initial associations that may be areas for further study or targets of public health measures.
+# Abstract
+Life expectancy is an important general metric in comparing countries health of their populations on the same scale, but the factors that lead affect it and numerous and nuanced.The goal is to create a model to better understand which risks are the most influential on life expectancy by combining two data sets containing information on life expectancy, demographics, and prevalent risk factors. Through analysis of data collected by the World Health Organization on the average life expectancy and most prevalent risk factors for death for each country over the years, I aim to draw initial associations that may be areas for further study or targets of public health measures. Through a surface level exploration of the data, the trends in life expectancy compared to other factors can be observed and then further examined with simple statistical analyses. After that point, machine learning models are employed to more accurately predict life expectancy from provided variables.
 
 
 {{< pagebreak >}}
@@ -33,19 +33,17 @@ With new unique risks arising to human health, along with older ones becoming le
 
 ## General Background Information
 
+With new unique risks arising to human health, along with older ones becoming less prevalent, the factors that tie in to life expectancy are changing over time. Broad vaccine coverage has virtually eliminated the presence of diseases like polio and measles in most developed countries and populations, while air pollution and poor nutrition/weight issues have become an increasing problem for many people[@Goodson_2017] [@Yin_2020]. The risk exposures that have increased the most globally from 2010 to 2019 are ambient particulate matter pollution, drug use, high fasting plasma glucose, and high body-mass index while the ones that have decreased are household air pollution, unsafe water, sanitation and handwashing, child growth failure, tobacco smoking, and lead exposure [@Murray_2020]. Although the leading risk factors resulting in death vary by age and location, the overall highest were high systolic blood pressure and and tobacco [@Murray_2020].
+
 Many factors can play a part in life expectancy in different countries from availability of medical care and vaccines to mental health and happiness.Factors may differ in the weight of their effect depending on developmental status of the country as well, and some previous research has shown the more obvious variables like GDP or health expenditure may not always be as influential as one may assume in these cases [@Kabir_2008]. There have been attempts to create formulas to mathematically determine a population's life expectancy based on risk factors within that population but each are so specific that its difficult to create an overall generalizable model.
 --Will be adding more soon--
 
 ## Description of data and data source
-I decided to analyze two data sets, one is a life expectancy data set collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunization rates and the human development index for each country along with their overall life expectancy from. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year. Some examples include unsafe water sources and hygiene, child wasting and thinness, lifestyle and behavioral factors, and pollution.
+I decided to analyze two data sets, one is a life expectancy data set collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunization rates and the human development index for each country along with their overall life expectancy from. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year. Some examples include unsafe water sources and hygiene, child wasting and thinness, lifestyle and behavioral factors, and pollution. The summary table of the risk factor data set [@table-1] and life expectancy data set [@table-2] can be seen in the exploratory and descriptive analysis section of the manuscript.
 
 ```{r}
-#load in each dataset
-lifeexp <- readRDS("../../data/processed_data/processeddata_life.rds")
-riskfactor <- readRDS("../../data/processed_data/processeddata_risk.rds")
-#glimpse of each
-glimpse(lifeexp)
-glimpse(riskfactor)
+readRDS(file = "../../results/glimpserisk.rds")
+readRDS(file="../../results/glimpselife.rds")
 ```
 Above shows a quick overview of some of the variables in each data set. There is a broad range of information that could be investigated for correlations to life expectancy.
 
@@ -67,7 +65,7 @@ The data for each set was separated by country and year, with the metrics repres
 The cleaning of the raw data can be found in datacleaning.qmd file in the code folder and processing_code subfolder. I filtered down the risk factor data set to only include the years from 2000 to 2015 in order to match the life expectancy data. I also renamed variables in each set to make the information clearer and more ubiquitous, such as 'Entity' to 'Country' in the risk factor data.
 
 ## Statistical analysis
-Initially some generalized linear models were ran with all variables and with certain subsets of variables. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling. A decision tree @fig-result5 was developed initially that illustrated simple predictive variables leading to the strata of life expectancy.
+Initially some generalized linear models were ran with all variables and with certain subsets of variables. Life expectancy is negatively correlated with the status of developing and positively correlated with the status of developed. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling. A decision tree @fig-result5 was developed initially that illustrated simple predictive variables leading to the strata of life expectancy.
 
 
 {{< pagebreak >}}
@@ -81,10 +79,15 @@ First, here are summary tables for each data set to see an overview of the data.
 
 ```{r}
 #Risk factor dataset summary table
+#| label: table-1
+#| fig-cap: "Risk Factor Data Summary Tabel"
+#| echo: FALSE
 readRDS(file = "../../results/summarytableriskfactor.rds")
 ```
 ```{r}
-#Life expectancy dataset summary table.
+#| label: table-2
+#| fig-cap: "Life Expectancy Data Summary Table"
+#| echo: FALSE
 readRDS("../../results/summarytablelifeexp.rds")
 ```
 
@@ -126,38 +129,59 @@ Here I explored some factors that would seem to be reasonably significant with s
 
 First, a logistic regression with country status and life expectancy.
 ```{r}
+#| label: glm-result1
+#| fig-cap: "Logistic regression with Life Expectancy against Development Status"
+#| echo: FALSE
 readRDS(file="../../results/tidyglm1.rds")
 ```
 Life expectancy is negatively correlated with the country status of `developing`.
 
 Then a linear regression comparing year to life expectancy.
 ```{r}
+#| label: lm-1
+#| fig-cap: "Linear Regression Results of Year vs. Life Expectancy"
+#| echo: FALSE
 readRDS(file="../../results/tidyfitlm1.rds")
 ```
 Year is positively correlated with life expectancy.
 
 Another linear regression with BMI.
 ```{r}
+#| label: lm-2
+#| fig-cap: "Linear Regression Results of BMI vs. Life Expectancy"
+#| echo: FALSE
 readRDS("../../results/tidyfitlm2.rds")
 ```
 In this instance, BMI is positively correlated with life expectancy.
 
 ```{r}
+#| label: lm-3
+#| fig-cap: "Linear Regression Results of Polio Vaccination Rates vs. Life Expectancy"
+#| echo: FALSE
 readRDS("../../results/tidyfitlm3.rds")
 ```
 Polio doesn't seem significantly correlated.
 
 ```{r}
+#| label: lm-4
+#| fig-cap: "Linear Regression Results of Measles Cases vs. Life Expectancy"
+#| echo: FALSE
 readRDS("../../results/tidyfitlm4.rds")
 ```
 Measles does not seem significantly correlated with life expectancy.
 
 ```{r}
+#| label: lm-5
+#| fig-cap: "Linear Regression Results of Air Pollution vs. Life Expectancy"
+#| echo: FALSE
 readRDS("../../results/tidyfitlm5.rds")
 ```
 Air pollution is negatively correlated with life expectancy.
 
 ```{r}
+#| label: lm-6
+#| fig-cap: "Linear Regression Results of Low Physical Activity vs. Life Expectancy"
+#| echo: FALSE
 readRDS("../../results/tidyfitlm6.rds")
 ```
 
@@ -196,5 +220,9 @@ _What are the main take-home messages?_
 
 # References
 
+Shaw, J. W., Horrace, W. C., &amp; Vogel, R. J. (2005, April 1). The determinants of life expectancy: An analysis of the OECD health ... Retrieved April 27, 2023, from https://onlinelibrary.wiley.com/doi/10.1002/j.2325-8012.2005.tb00675.x 
 
+GBD 2019 Risk Factors Collaborators (2020). Global burden of 87 risk factors in 204 countries and territories, 1990-2019: a systematic analysis for the Global Burden of Disease Study 2019. Lancet (London, England), 396(10258), 1223–1249. https://doi.org/10.1016/S0140-6736(20)30752-2
+
+Yin, P., Brauer, M., Cohen, A. J., Wang, H., Li, J., Burnett, R. T., Stanaway, J. D., Causey, K., Larson, S., Godwin, W., Frostad, J., Marks, A., Wang, L., Zhou, M., & Murray, C. J. L. (2020). The effect of air pollution on deaths, disease burden, and life expectancy across China and its provinces, 1990-2017: an analysis for the Global Burden of Disease Study 2017. The Lancet. Planetary health, 4(9), e386–e398. https://doi.org/10.1016/S2542-5196(20)30161-3
 
