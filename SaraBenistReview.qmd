@@ -1,0 +1,174 @@
+---
+title: Project Review  
+author: Sara Benist
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+# Overview
+
+Title of project: Risk Factors Affecting Life Expectancy
+
+Name of project author(s): Annabella Hines
+
+Name of project reviewer: Sara Benist
+
+
+# Specific project content evaluation
+Evaluate the different parts of the project by filling in the sections below.
+
+
+## Background, Context and Motivation
+How well is the context of the project described? Is a comprehensive background, including summary of previous/related work given? Is the project well placed into the context of existing work (including proper referencing of existing work). Is it clear why the project was undertaken and what new information it hopes to provide?
+
+### Feedback and Comments
+The summary/abstract should be expanded so that it is an overview of the whole project rather than a summary of the introduction by adding in methods and main results. 
+
+The background needs to be more thoroughly explained with some history of mortality (mostly infectious disease to mostly modifiable risk factors to disparities between countries of various development). Research the risk factors in your data set and maybe explore some of the epidemiology. References worked correctly.
+
+### Summary assessment 
+* some contextualization and motivation
+
+
+## Question description
+How well and clear are the question(s)/hypotheses the project aims to address described? Is it clear how the questions relate to the data?
+
+### Feedback and Comments
+
+Question is clear, but it is a little confusing based on the introduction how you are comparing the `riskfactor` data set (which has mortality from various risk factors) to the life expectancy found in the `lifeexp`. Maybe add a hypothesis to describe how you would be comparing the variables to life expectancy. Would it be  mortality from a specific variable correlated with life expectancy?
+
+### Summary assessment
+
+* question/hypotheses somewhat explained
+
+
+## Data description
+How well is the data overall described? Is the source provided? Is a codebook or other meta-information available that makes it clear what the data is? 
+
+### Feedback and Comments
+
+Data sources and description are supplied and explained. No codebook is provided, but data is mostly clear. If you wanted to make a codebook, Zane recommended to make one in Excel and upload into the `data` folder. 
+
+### Summary assessment
+
+* source and overall structure of data well explained
+
+
+## Data wrangling and exploratory analysis
+How well is the data cleaned/processed and explored? Are all steps reasonable and well explained? Are alternatives discussed and considered? Are meaningful exploratory results shown (e.g. in the supplementary materials)?
+
+### Feedback and Comments
+
+I would add in file names/direct readers to the readme of the code folder when referencing the supplementary material so it is easy to find. The data cleaning section could also be expanded a little further for the renaming section. 
+
+The exploratory analysis text should be discussed more in the results section. Based on what you found during the `exploratory_analysis.qmd` coding, highlight the important points from the summary tables and explain the plots and graphs in more detail. 
+
+Also, the plots/graphs titles run off the page, so you might want to make it to 2 lines using \n.
+
+### Summary assessment
+* major weaknesses in wrangling and exploratory component
+
+
+## Appropriateness of Analysis
+Were the analysis methods appropriate for the data? Was the analysis done properly? Were different components of the analysis (e.g. performance measure, variable selection, data pre-processing, model evaluation) done in the best way possible and explained well?
+
+### Feedback and Comments
+
+The statistical analysis should be more descriptive. What models were run/what predictors did you use? What machine learning models did you use and why did you choose those models?
+
+Same as in the background, code should just be to read in tables or figures. 
+
+In the logistic regression, the outcome should be life expectancy based on the text (Life.expectancy ~ Status). And since you separated the countries into developing and developed countries in the exploratory analysis, you could add in status to the basic models. Add in limitations of basic models. 
+
+The tree model was explained well, but the model performance was not evaluated in the manuscript. 
+
+### Summary assessment
+
+* defensible but not optimal analysis 
+
+
+## Presentation
+How well are results presented? Are tables and figures easy to read and understand? Are the main figures/tables publication level quality? 
+
+### Feedback and Comments
+
+Fixing the code presentation will improve the flow of the results section. Make sure to add in more explanation to your findings. I'm not entirely sure how, but if you can add titles to the figures, that would be helpful too. 
+
+### Summary assessment
+
+* results are presented ok, with room for improvement
+
+
+## Discussion/Conclusions
+Are the study findings properly discussed? Are strengths and limitations acknowledged? Are findings interpreted properly?
+
+### Feedback and Comments
+
+Summary and interpretation missing. Strengths and limitations are discussed, but I would include the limitations based on analyses and data measurements. Conclusions are not present.
+
+### Summary assessment
+* major parts of discussion missing or wrong 
+
+
+## Further comments
+
+You should take out the actual code from the Manuscript file so you just bring in tables, graphs, plots, etc. I did the same thing up until my last submission, and Dr. Handel requested no code in the manuscript. This will also get rid of the need for the packages at the beginning (I think you just need here and readr maybe).
+
+
+# Overall project content evaluation
+Evaluate overall features of the project by filling in the sections below.
+
+
+## Structure
+Is the project well structured? Are files in well labeled folders? Do files have reasonable names? Are all "junk" files not needed for analysis/reproduction removed? By just looking at files and folders, can you get an idea of how things fit together?
+
+### Feedback and Comments
+
+Remove the extra language in the readme files (data) and add in exactly what files to render in what order. All the folders and files are labeled well.
+
+### Summary assessment
+* well structured
+
+
+## Documentation 
+How well is the project documented? Are you able to understand each step of the whole analysis, each decision that was made, and each line of code? Is enough information provided as comments in code or as part of Rmd files? 
+
+### Feedback and Comments
+
+You might want to add in documentation outside of the code in the supplementary files to explain the findings from the code and why you made those decisions. The documentation within the code is sufficient to explain what steps are being taken. 
+
+### Summary assessment
+
+* decently documented with some gaps
+
+
+## Reproducibility
+Are all results fully reproducible? Is documentation provided which clearly explains how to reproduce things, and does it work without the need for any manual intervention? Are you able to re-run the whole analysis without having to do manual interventions/edits?
+
+### Feedback and Comments
+
+I was able to run all the code. The exploratory analysis was a little difficult to understand. I would recommend moving the regressions and modeling into a statistical analysis file rather than in the exploratory analysis. This should reduce the amount of time required to render the file. Also, there were a lot of comments on the cross-validation steps that made it difficult to read. 
+
+### Summary assessment
+
+* fully reproducible without issues
+
+
+## Thoroughness
+How thorough was the overall study? Were alternatives (e.g. different ways of processing the data or different models) considered? Were alternatives discussed? Were the questions/hypotheses fully and thoroughly addressed?
+
+### Feedback and Comments
+
+There are still some major parts that need to be added and fleshed out. I think by adding in more explanations/conclusion to the manuscript and supplementary files will help. The research question should be answered in the discussion/conclusion, but the decision tree plot helps visualize how the question will be addressed. The modelling also needs to be evaluated with residuals as well. 
+
+### Summary assessment
+* weak level of thoroughness
+
+
+## Further comments
+
+I think the main thing is just to add in more text outside of the code to help draw conclusions, defend decisions, and address next coding steps. 
