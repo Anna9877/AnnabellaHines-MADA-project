@@ -1,0 +1,156 @@
+---
+  title: Project Review Template 
+author: 
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+  toc: true
+toc-depth: 3
+number-sections: true
+---
+
+# Overview
+
+Title of project: sarabenist-MADA-project
+
+Name of project author(s): Annabella Hines
+
+Name of project reviewer: Jacob Matta
+
+## HELLO
+
+Hi Annabella, I am happy to be reviewing your project. Please bear with me as I attempt to provide meaningful comments in order to help you further develop your project. I thank you for your time in advance!
+
+## Background, Context and Motivation
+
+### Review of Summary/Abstract
+
+In the first sentence, you immediately give the reader an idea what your research focus is. You mention that life expectancy is important however it is "nuanced" which makes me curious and draws my attention to learn more about what your analysis. 
+
+Your research goal is stated in the second sentence and is extremely interesting. You follow this by explaining where you will get the data to complete this analysis which is helpful for the reader. Lastly, you explain to methods you will take to conduct the analysis. 
+
+I enjoyed your abstract as it is brief as intended and helps the reader understand what you're interested in, why you are conducting the analysis and how you will conduct the analysis. 
+
+
+### Review of Introduction
+You explain how some of the risk factors have before less prevalent like broad vaccine coverage for polio and the measles which helps the reader understand how these factors do and can change over time. In addition, you mention some predictors like air pollution, country developmental status, unsafe water, sanitation levels, lead exposure, and tobacco smoking. It is a little unclear what predictors you will focus on and how you will decide to you those predictors but I see that you are not finished with your introduction so I am sure these will be address in the near future. 
+
+### Summary assessment (PICK ONE, DELETE THE OTHERS)
+* some contextualization and motivation
+
+
+
+## Question description
+How well and clear are the question(s)/hypotheses the project aims to address described? Is it clear how the questions relate to the data?
+
+
+Research Question: "Which variables are the most highly correlated to life expectancy? Are there differences in the most associated factors between the years 2000 and 2015?"
+
+ Clear and concise making as it relates to the data sets you are using. 
+
+### Summary assessment
+* question/hypotheses fully clear
+
+
+## Data description
+You describe the two data sets you are using and where to get them. It would be useful to add the amount of variables and observations for both data sets so that the reader understands the size of each data set. Both data sets are relevant to your research question. 
+
+
+### Summary assessment
+* source and overall structure of data well explained
+
+
+## Data wrangling and exploratory analysis
+
+### Data Processing
+You state where to find the the `datacleaning.qmd` file in order to clean the data. Also the processing steps you describe in the manuscript are quite clear and easy to follow and align with the actual code you ran. 
+
+### Exploratory Analysis 
+I am not exactly sure why you are creating a data set called "risk" and one called "life". I am sure there is a logical reason to this, however, I do not see an documented explanation for this. Possibly adding a section called exploratory analysis in your manuscript will help in terms of understand what you did and why you did it in. 
+
+### Summary assessment
+* some weaknesses in wrangling and exploratory component
+
+
+## Appropriateness of Analysis
+
+### Bivariate anaylsis 
+Your bivariate analyiss was well explained and was easy to follow along. In your manuscript you provide the relevant results and briefly discuss the resutls. 
+
+### Full Statistical Analysis 
+Like your bivariate analysis, the full analysis was well documented with figured to show the results. I think it would be helpful for the reader if you were to describe why you chose the decision tree model. However, you do describe the ML model well that provides the reader to insight of the results. 
+
+
+### Summary assessment
+* strong and reasonable analysis
+
+## Presentation
+Your Manuscript is presented quite well. The presentation will be provided if you either remove the data sets from your manuscript or change the code to provide summaries of each data set. I provide this suggestion because by uploading the data sets in your manuscript your page count is over 1000.
+
+### Summary assessment
+* results are presented ok, with room for improvement
+
+
+
+## Discussion/Conclusions
+Are the study findings properly discussed? Are strengths and limitations acknowledged? Are findings interpreted properly?
+
+### Feedback and Comments
+
+Not included.
+
+### Summary assessment
+* major parts of discussion missing or wrong 
+
+
+## Further comments
+
+I think once you add your discussion and conclusion you will have a very strong analysis.
+
+
+## Structure
+Is the project well structured? Are files in well labeled folders? Do files have reasonable names? Are all "junk" files not needed for analysis/reproduction removed? By just looking at files and folders, can you get an idea of how things fit together?
+
+In your manuscript you upload your data sets using the following code:
+```{r}
+readRDS(file = "../../results/glimpserisk.rds")
+readRDS(file="../../results/glimpselife.rds")
+```
+
+The issue is when the user renders your manuscript both data sets product an output that takes up over 1000 pages. To fix this possibly just include summary statistics of your data sets.
+
+Other than that your project is quite organized and easy to reproduce.
+
+### Summary assessment
+* well structured
+
+
+## Documentation 
+I think your documentation can improve a bit. Possibly by further elaborating on your exploratory analysis either in the manurscript or in a supplemental document would be greatly helpful for the viewer.
+
+### Summary assessment
+
+* decently documented with some gaps
+
+
+
+
+## Reproducibility
+Are all results fully reproducible? Is documentation provided which clearly explains how to reproduce things, and does it work without the need for any manual intervention? Are you able to re-run the whole analysis without having to do manual interventions/edits?
+
+I was able to reproduce all the documents without an issue, great job.
+
+
+### Summary assessment
+* fully reproducible without issues
+
+
+## Thoroughness
+How thorough was the overall study? Were alternatives (e.g. different ways of processing the data or different models) considered? Were alternatives discussed? Were the questions/hypotheses fully and thoroughly addressed?
+
+I don't think there is an issue with your thoroughness, you just need to complete the discussion and conclusion.
+
+### Summary assessment
+* strong level of thorougness
+
+
