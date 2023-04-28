@@ -144,6 +144,13 @@ fitlm6results = here("results", "tidyfitlm6.rds")
 saveRDS(tidyfitlm6, file = fitlm6results)
 ```
 
+```{r}
+fitlm7 <- lm_mod %>% 
+  fit(Life.expectancy ~ ., data=combo_both)
+fitlm7
+tidy(fitlm7)
+```
+
 
 ##Machine Learning
 
