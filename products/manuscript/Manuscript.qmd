@@ -44,8 +44,6 @@ I decided to analyze two data sets, one is a life expectancy data set collected 
 Which variables are the most highly correlated to life expectancy? What risk factors or demographics are the best predictors of life expectancy? Are there differences in the most associated factors between the years 2000 and 2015?
 
 
-{{< pagebreak >}}
-
 
 # Methods 
 
@@ -57,7 +55,7 @@ The data for each set was separated by country and year, with the metrics repres
 The cleaning of the raw data can be found in datacleaning.qmd file in the code folder and processing_code subfolder. I filtered down the risk factor data set to only include the years from 2000 to 2015 in order to match the life expectancy data. I also renamed variables in each set to make the information clearer and more ubiquitous, such as 'Entity' to 'Country' in the risk factor data.
 
 ## Statistical analysis
-Initially some generalized linear models were ran with all variables and with certain subsets of variables. Life expectancy is negatively correlated with the status of developing and positively correlated with the status of developed. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling. A decision tree @fig-result5 was developed initially that illustrated simple predictive variables leading to the strata of life expectancy.
+Initially some generalized linear models were ran with all variables and with certain subsets of variables. Life expectancy is negatively correlated with the status of developing and positively correlated with the status of developed. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling. A decision tree [@fig-result5] was developed initially that illustrated simple predictive variables leading to the strata of life expectancy. A multivariate linear regression was ran with all of the variables to determine which were the most significant, than that subset of variables was run again on their own.
 
 
 {{< pagebreak >}}
@@ -69,14 +67,14 @@ Initially some generalized linear models were ran with all variables and with ce
 
 First, here are summary tables for each data set to see an overview of the data.
 
-```{r}
-#Risk factor dataset summary table
+```{r, echo=FALSE}
 #| label: table-1
 #| fig-cap: "Risk Factor Data Summary Tabel"
 #| echo: FALSE
 readRDS(file = "../../results/summarytableriskfactor.rds")
 ```
-```{r}
+
+```{r, echo=FALSE}
 #| label: table-2
 #| fig-cap: "Life Expectancy Data Summary Table"
 #| echo: FALSE
@@ -86,17 +84,20 @@ readRDS("../../results/summarytablelifeexp.rds")
 
 
 ```{r}
-#Plot of Life Expectancy and Adult mortality in 2000
 #| label: fig-exp1
 #| fig-cap: "Life Expectancy and Adult Mortality 2000"
 #| echo: FALSE
 knitr::include_graphics(here("results","p1_2000.png"))
-#Plot of Life Expectancy and Adult mortality in 2015
+```
+
+```{r}
 #| label: fig-exp2
 #| fig-cap: "Life Expectancy and Adult Mortality 2015"
 #| echo: FALSE
 knitr::include_graphics(here("results","p2_2015.png"))
 ```
+
+
 The trend of life expectancy decreasing as adult mortality increases is similar in 2000 and 2015, with developed countries shown at the end with high life expectancy and low adult mortality.
 
 ```{r}
@@ -106,15 +107,6 @@ The trend of life expectancy decreasing as adult mortality increases is similar 
 knitr::include_graphics(here("results","LifeExpectancyStatusBoxPlotFull.png"))
 ```
 The life expectancy distribution for developed and developing countries were similar in 2000 and 2015, with developed countries having an overall higher distribution.
-
-
-```{r}
-#| label: fig-result4
-#| fig-cap: "Deaths Due to Unsafe Water Source, Unsafe Sanitation, or No Access to Handwashing Facilities in the United States from 2000 to 2015"
-#| echo: FALSE
-knitr::include_graphics(here("results","WaterriskUS.png"))
-```
-
 
 
 ## Basic statistical analysis
@@ -185,13 +177,30 @@ readRDS("../../results/tidyfitlm6.rds")
 
 Here is a decision tree model with the predictions for different stratum of life expectancy.
 ```{r}
-#Decision Tree Graphic
 #| label: fig-result5
-#| fig-cap: "Decision tree"
+#| fig-cap: "Decision tree 2015"
 #| echo: FALSE
-knitr::include_graphics(here("results","tree.png"))
+knitr::include_graphics(here("results","treeall.png"))
 ```
-The initial split was on unsafe sanitation, with the split reported as yes further split with HIV and AIDS into the lower life expectancy strata. If there is no unsafe sanitation, it further is split into income composition of resources and then adult mortality. This a simpler and less nuanced model but has an overall look at the predictive value of the data. 
+The initial split was on high numbers of HIV and AIDS,then polio into the lower life expectancy strata. If there are low numbers of HIV and AIDS, it further is split into income composition of resources and then adult mortality and child stunting. This a simpler and less nuanced model but has an overall look at the predictive value of the data. 
+
+```{r}
+#| label: fullmodel
+#| fig-cap: "Multivariate Linear Regression with all variables"
+#| echo: FALSE
+readRDS("../../results/summaryfullmodel.rds")
+```
+
+The variables marked as significant when all of them are included in predicting life expectancy are year, adult mortality, under five deaths, total expenditure, HIV/AIDS, income composition of resources, years of education, low birth weight for gestation, drug use, and high body mass index. The ones that were the most significant of those are adult mortality, total expenditure, HIV/AIDS, income composition of resources, and years of education.
+Here is a regression run with those variables deemed significant by the previous model.
+
+```{r}
+#| label: model2
+#| fig-cap: "Multivariate Linear Regression with most significant variables"
+#| echo: FALSE
+readRDS("../../results/summarymodel2.rds")
+```
+
 
 {{< pagebreak >}}
 

@@ -157,7 +157,8 @@ tidy(fitlm7)
 ```{r}
 #Set seed and split data
 set.seed(123)
-combo_both <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==c(2000, 2015))
+combo_both <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==c(2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015)) 
+
 
 combo_split <- initial_split(data=combo_both, strata = Life.expectancy, prop=7/10)
 
@@ -165,7 +166,7 @@ train_data <- training(combo_split)
 test_data  <- testing(combo_split)
 
 #Cross-validation
-resamples<-vfold_cv(data=train_data, v=10, repeats=10, strata=Life.expectancy)
+resamples<-vfold_cv(data=train_data, v=3, repeats=3, strata=Life.expectancy)
 
 combo_rec <- 
   recipe(Life.expectancy ~ ., data = train_data) %>% step_dummy(all_nominal(), -all_outcomes())
@@ -238,32 +239,95 @@ final_fit %>%
 rpart.plot(extract_fit_parsnip(final_fit)$fit)
 ```
 
-## Building a Lasso
 
+## Fitting a Tree for 2015
 ```{r}
-cores <- parallel::detectCores()
-cores
-rf_mod <- 
-  rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>% 
-  set_engine("ranger", num.threads = cores, importance="impurity") %>% 
-  set_mode("regression")
-#Create workflow
-rf_workflow <- 
-  workflow() %>% 
-  add_model(rf_mod) %>% 
-  add_recipe(combo_rec)
-#Parameters for tuning
-extract_parameter_set_dials(rf_mod)
+set.seed(123)
+combo_2015 <- right_join(life, risk, by=c("Country", "Year")) %>% filter(Year==2015)
+
+combo_split_2015 <- initial_split(data=combo_2015, strata = Life.expectancy, prop=7/10)
+
+train_data_2015 <- training(combo_split_2015)
+test_data_2015  <- testing(combo_split_2015)
+
+#Cross-validation
+resamples_2015<-vfold_cv(data=train_data_2015, v=3, repeats=3, strata=Life.expectancy)
+
+combo_rec_2015 <- 
+  recipe(Life.expectancy ~ ., data = train_data_2015) %>% step_dummy(all_nominal(), -all_outcomes())
+
+
+#workflow
+tree_wf_2015 <- workflow() %>%
+  add_model(tune_spec) %>%
+  add_recipe(combo_rec_2015)
+
+#Tuning grid cross validation
+tree_res_2015 <- 
+  tree_wf_2015 %>% 
+  tune_grid(
+    resamples = resamples_2015,
+    grid = tree_grid
+    )
+
+tree_res_2015 %>% 
+  collect_metrics()
+
+tree_res_2015 %>% autoplot()
+
+tree_res_2015 %>%
+  show_best(n=1)
+best_tree_2015 <- tree_res_2015 %>%
+  select_best(n=1)
+
+#Finalize workflow and fit
+final_tree_wf_2015 <- 
+  tree_wf_2015 %>% 
+  finalize_workflow(best_tree_2015)
+
+final_fit_2015 <- 
+  final_tree_wf_2015 %>%
+  last_fit(combo_split_2015) 
+
+final_fit_2015 %>%
+  collect_metrics()
+rpart.plot(extract_fit_parsnip(final_fit_2015)$fit)
 ```
 
 
+## Full multivariate model
+
 ```{r}
-#Tune grid
-rf_res <- 
-  rf_workflow %>% 
-  tune_grid(resamples,
-            grid = 25,
-            control = control_grid(save_pred = TRUE),
-            metrics = NULL)
+combo_dropped <- combo_all %>% select(-"Country")
+fitlm8 <- lm_mod %>% 
+  fit(Life.expectancy ~ ., data=combo_dropped)
+fitlm8
+tidy(fitlm8)
+model <- lm(Life.expectancy ~ ., data = combo_dropped)
+hist(residuals(model), col = "steelblue")
+summary(model)
+
+summary_fullmodel <-summary(model)
+summarymodel1 = here("results", "summaryfullmodel.rds")
+
+saveRDS(summary_fullmodel, file = summarymodel1)
+```
+
+The variables marked as significant when all of them are included in predicting life expectancy are year, adult mortality, under five deaths, total expenditure, HIV/AIDS, income composition of resources, years of education, low birth weight for gestation, drug use, and high body mass index. The ones that were the most significant of those are adult mortality, total expenditure, HIV/AIDS, income composition of resources, and years of education.
+Here is a regression run with those variables deemed significant by the previous model.
+```{r}
+fitlm9 <- lm_mod %>% 
+  fit(Life.expectancy ~ Year + Adult.Mortality + Under.five.deaths + Total.expenditure+ HIV.AIDS + Income.composition.of.resources + Years.of.education + Low.birth.weight.for.gestation + Drug.use +High.body.mass.index, data=combo_dropped)
+fitlm9
+tidy(fitlm9)
+model2 <- lm(Life.expectancy ~ Year + Adult.Mortality + Under.five.deaths + Total.expenditure+ HIV.AIDS + Income.composition.of.resources + Years.of.education + Low.birth.weight.for.gestation + Drug.use +High.body.mass.index, data = combo_dropped)
+hist(residuals(model2), col = "steelblue")
+summary(model2)
+
+
+summary_model2 <-summary(model2)
+summarymodel2 = here("results", "summarymodel2.rds")
+
+saveRDS(summary_model2, file = summarymodel2)
 ```
 
