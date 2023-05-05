@@ -58,13 +58,15 @@ summarytable_riskfactor = here("results", "summarytableriskfactor.rds")
 
 saveRDS(summary_riskfactor, file = summarytable_riskfactor)
 
-glimpselife <- glimpse(life)
-glimpseliferds = here("results", "glimpselife.rds")
-saveRDS(glimpselife, file = glimpseliferds)
 
-glimpserisk <- glimpse(risk)
-glimpseriskrds = here("results", "glimpserisk.rds")
-saveRDS(glimpserisk, file = glimpseriskrds)
+skimr::skim(life)
+lifedes<-psych::describe(life)
+lifedesrds = here("results", "lifedes.rds")
+saveRDS(lifedes, file=lifedesrds)
+
+riskdes <- psych::describe(risk)
+riskdesrds = here("results", "riskdes.rds")
+saveRDS(riskdes, file=riskdesrds)
 
 ```
 

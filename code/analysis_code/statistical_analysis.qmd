@@ -238,3 +238,32 @@ final_fit %>%
 rpart.plot(extract_fit_parsnip(final_fit)$fit)
 ```
 
+## Building a Lasso
+
+```{r}
+cores <- parallel::detectCores()
+cores
+rf_mod <- 
+  rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>% 
+  set_engine("ranger", num.threads = cores, importance="impurity") %>% 
+  set_mode("regression")
+#Create workflow
+rf_workflow <- 
+  workflow() %>% 
+  add_model(rf_mod) %>% 
+  add_recipe(combo_rec)
+#Parameters for tuning
+extract_parameter_set_dials(rf_mod)
+```
+
+
+```{r}
+#Tune grid
+rf_res <- 
+  rf_workflow %>% 
+  tune_grid(resamples,
+            grid = 25,
+            control = control_grid(save_pred = TRUE),
+            metrics = NULL)
+```
+

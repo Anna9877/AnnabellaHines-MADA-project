@@ -11,7 +11,6 @@ format:
 bibliography: ../../references.bib
 ---
 
-## Load Required Packages
 
 ```{r, echo=FALSE, message=FALSE}
 # load a few R packages
@@ -23,7 +22,7 @@ library(tidyverse)
 
 
 # Abstract
-Life expectancy is an important general metric in comparing countries health of their populations on the same scale, but the factors that lead affect it and numerous and nuanced.The goal is to create a model to better understand which risks are the most influential on life expectancy by combining two data sets containing information on life expectancy, demographics, and prevalent risk factors. Through analysis of data collected by the World Health Organization on the average life expectancy and most prevalent risk factors for death for each country over the years, I aim to draw initial associations that may be areas for further study or targets of public health measures. Through a surface level exploration of the data, the trends in life expectancy compared to other factors can be observed and then further examined with simple statistical analyses. After that point, machine learning models are employed to more accurately predict life expectancy from provided variables.
+Life expectancy is an important general metric in comparing countries' health of their populations on the same scale, but the factors that affect it are numerous and nuanced.The goal is to create a model to better understand which risks are the most influential on life expectancy by combining two data sets containing information on life expectancy, demographics, and prevalent risk factors. Through analysis of data collected by the World Health Organization on the average life expectancy and most prevalent risk factors for death for each country over the years, I aim to draw initial associations that may be areas for further study or targets of public health measures. Through a surface level exploration of the data, the trends in life expectancy compared to other factors can be observed and then further examined with simple statistical analyses. After that point, machine learning models are employed to more accurately predict life expectancy from provided variables.
 
 
 {{< pagebreak >}}
@@ -33,23 +32,16 @@ Life expectancy is an important general metric in comparing countries health of 
 
 ## General Background Information
 
-With new unique risks arising to human health, along with older ones becoming less prevalent, the factors that tie in to life expectancy are changing over time. Broad vaccine coverage has virtually eliminated the presence of diseases like polio and measles in most developed countries and populations, while air pollution and poor nutrition/weight issues have become an increasing problem for many people[@Goodson_2017] [@Yin_2020]. The risk exposures that have increased the most globally from 2010 to 2019 are ambient particulate matter pollution, drug use, high fasting plasma glucose, and high body-mass index while the ones that have decreased are household air pollution, unsafe water, sanitation and handwashing, child growth failure, tobacco smoking, and lead exposure [@Murray_2020]. Although the leading risk factors resulting in death vary by age and location, the overall highest were high systolic blood pressure and and tobacco [@Murray_2020].
+With new unique risks arising to human health, along with older ones becoming less prevalent, the factors that tie in to life expectancy are changing over time. Broad vaccine coverage has virtually eliminated the presence of diseases like polio and measles in most developed countries and populations, while air pollution and poor nutrition/weight issues have become an increasing problem for many people[@Goodson_2017] [@Yin_2020]. The risk exposures that have increased the most globally from 2010 to 2019 are ambient particulate matter pollution, drug use, high fasting plasma glucose, and high body-mass index while the ones that have decreased are household air pollution, unsafe water/sanitation/handwashing, child growth failure, tobacco smoking, and lead exposure [@Murray_2020]. Although the leading risk factors resulting in death vary by age and location, the overall highest were high systolic blood pressure and and tobacco use[@Murray_2020].
 
-Many factors can play a part in life expectancy in different countries from availability of medical care and vaccines to mental health and happiness.Factors may differ in the weight of their effect depending on developmental status of the country as well, and some previous research has shown the more obvious variables like GDP or health expenditure may not always be as influential as one may assume in these cases [@Kabir_2008]. There have been attempts to create formulas to mathematically determine a population's life expectancy based on risk factors within that population but each are so specific that its difficult to create an overall generalizable model.
---Will be adding more soon--
+Many factors can play a part in life expectancy in different countries from availability of medical care and vaccines to mental health and happiness. Factors may differ in the weight of their effect depending on developmental status of the country as well, and some previous research has shown the more obvious variables like GDP or health expenditure may not always be as influential as one may assume in these cases [@Kabir_2008]. There have been attempts to create formulas to mathematically determine a population's life expectancy based on risk factors within that population but each are so specific that its difficult to create an overall generalizable model.
 
 ## Description of data and data source
 I decided to analyze two data sets, one is a life expectancy data set collected by the World Health organization which I obtained at this link https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who from Kaggle. This data specifically looks at immunization rates and the human development index for each country along with their overall life expectancy from. The other data set is Worldwide Deaths by country and risk factor which was also downloaded from Kaggle at https://www.kaggle.com/datasets/varpit94/worldwide-deaths-by-risk-factors. This data is as the title states, with the number of deaths for different risk factors in countries by year. Some examples include unsafe water sources and hygiene, child wasting and thinness, lifestyle and behavioral factors, and pollution. The summary table of the risk factor data set [@table-1] and life expectancy data set [@table-2] can be seen in the exploratory and descriptive analysis section of the manuscript.
 
-```{r}
-readRDS(file = "../../results/glimpserisk.rds")
-readRDS(file="../../results/glimpselife.rds")
-```
-Above shows a quick overview of some of the variables in each data set. There is a broad range of information that could be investigated for correlations to life expectancy.
-
 
 ## Questions/Hypotheses to be addressed
-Which variables are the most highly correlated to life expectancy? Are there differences in the most associated factors between the years 2000 and 2015?
+Which variables are the most highly correlated to life expectancy? What risk factors or demographics are the best predictors of life expectancy? Are there differences in the most associated factors between the years 2000 and 2015?
 
 
 {{< pagebreak >}}
@@ -105,7 +97,7 @@ knitr::include_graphics(here("results","p1_2000.png"))
 #| echo: FALSE
 knitr::include_graphics(here("results","p2_2015.png"))
 ```
-
+The trend of life expectancy decreasing as adult mortality increases is similar in 2000 and 2015, with developed countries shown at the end with high life expectancy and low adult mortality.
 
 ```{r}
 #| label: fig-result3
@@ -113,6 +105,8 @@ knitr::include_graphics(here("results","p2_2015.png"))
 #| echo: FALSE
 knitr::include_graphics(here("results","LifeExpectancyStatusBoxPlotFull.png"))
 ```
+The life expectancy distribution for developed and developing countries were similar in 2000 and 2015, with developed countries having an overall higher distribution.
+
 
 ```{r}
 #| label: fig-result4
@@ -134,7 +128,7 @@ First, a logistic regression with country status and life expectancy.
 #| echo: FALSE
 readRDS(file="../../results/tidyglm1.rds")
 ```
-Life expectancy is negatively correlated with the country status of `developing`.
+Life expectancy appears to be negatively correlated with the country status of `developing`.
 
 Then a linear regression comparing year to life expectancy.
 ```{r}
@@ -205,10 +199,10 @@ The initial split was on unsafe sanitation, with the split reported as yes furth
 # Discussion
 
 ## Summary and Interpretation
-_Summarize what you did, what you found and what it means._
+After cleaning the data and combining the sets, the variables were explored to get an estimate of possible associations to look into further. After determining which variables seemed most important, statistical tests were ran to get a more concrete idea of the actual association. 
 
 ## Strengths and Limitations
-Some strengths include how large and expansive the data set is, as it has many variables for nearly every country and with a large range of years. A weakness that goes along with that is that it was difficult to work with such a large data set and pick out what the most important things to explore were. Also life expectancy is a nuanced estimate that has to do with a combination of multiple factors and also things that are not included in the available data, so a truly accurate analysis may be out of my reach.
+Some strengths include how large and expansive the data set is, as it has many variables for nearly every country and with a large range of years. It also comes from a very reliable source, the World Health Organization. A weakness that goes along with that is that it was difficult to work with such a large data set and pick out what the most important things to explore were. Also life expectancy is a nuanced estimate that has to do with a combination of multiple factors and also things that are not included in the available data, so a truly accurate analysis may be out of my reach.
 
 ## Conclusions
 _What are the main take-home messages?_
@@ -219,10 +213,4 @@ _What are the main take-home messages?_
 {{< pagebreak >}}
 
 # References
-
-Shaw, J. W., Horrace, W. C., &amp; Vogel, R. J. (2005, April 1). The determinants of life expectancy: An analysis of the OECD health ... Retrieved April 27, 2023, from https://onlinelibrary.wiley.com/doi/10.1002/j.2325-8012.2005.tb00675.x 
-
-GBD 2019 Risk Factors Collaborators (2020). Global burden of 87 risk factors in 204 countries and territories, 1990-2019: a systematic analysis for the Global Burden of Disease Study 2019. Lancet (London, England), 396(10258), 1223–1249. https://doi.org/10.1016/S0140-6736(20)30752-2
-
-Yin, P., Brauer, M., Cohen, A. J., Wang, H., Li, J., Burnett, R. T., Stanaway, J. D., Causey, K., Larson, S., Godwin, W., Frostad, J., Marks, A., Wang, L., Zhou, M., & Murray, C. J. L. (2020). The effect of air pollution on deaths, disease burden, and life expectancy across China and its provinces, 1990-2017: an analysis for the Global Burden of Disease Study 2017. The Lancet. Planetary health, 4(9), e386–e398. https://doi.org/10.1016/S2542-5196(20)30161-3
 
