@@ -99,7 +99,7 @@ Polio does not seem significantly correlated.
 
 ```{r}
 fitlm4 <- lm_mod %>%
-  fit(Life.expectancy ~ Measles, data=life)
+  fit(Life.expectancy ~ HIV.AIDS, data=life)
 #checking results
 fitlm4
 tidy(fitlm4)

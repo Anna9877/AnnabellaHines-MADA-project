@@ -1,2 +1,2 @@
 The folders inside this folder should contain all data at various stages.
-The raw_data folder contains the original unaltered data sets while the processed_data folder contains the code for the cleaning process and the cleaned data that is used in the rest of the analysis.
+The raw_data folder contains the original unaltered data sets while the processed_data folder contains the code for the cleaning process and the cleaned data that is used in the rest of the analysis. There is also the codebook explaining each variabel in both data sets.

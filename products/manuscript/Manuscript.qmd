@@ -47,7 +47,7 @@ Which variables are the most highly correlated to life expectancy? What risk fac
 
 # Methods 
 
-The data for each set was separated by country and year, with the metrics represented in either percentages or number per 100,000 people. The full explanation of each variable can be found in the supplementary material. Cleaning the data involved matching the years of both data sets and combining them, along with renaming certain variables for more clarification. The analysis starts with some simple one variable linear models focused on the association to the variable of interest, life expectancy. Then a few machine learning approaches were used, including the decision tree model.
+The data for each set was separated by country and year, with the metrics represented in either percentages or number per 100,000 people. The full explanation of each variable can be found in the supplementary material. Cleaning the data involved matching the years of both data sets and combining them, along with renaming certain variables for more clarification. The analysis starts with some simple one variable linear models focused on the association to the variable of interest, life expectancy. Then a machine learning approaches was used, specifically the decision tree model.
 
 
 ## Data import and cleaning
@@ -55,7 +55,7 @@ The data for each set was separated by country and year, with the metrics repres
 The cleaning of the raw data can be found in datacleaning.qmd file in the code folder and processing_code subfolder. I filtered down the risk factor data set to only include the years from 2000 to 2015 in order to match the life expectancy data. I also renamed variables in each set to make the information clearer and more ubiquitous, such as 'Entity' to 'Country' in the risk factor data.
 
 ## Statistical analysis
-Initially some generalized linear models were ran with all variables and with certain subsets of variables. Life expectancy is negatively correlated with the status of developing and positively correlated with the status of developed. After finding those results, some machine learning methods were used for more specialized conclusions and predictive modeling. A decision tree [@fig-result5] was developed initially that illustrated simple predictive variables leading to the strata of life expectancy. A multivariate linear regression was ran with all of the variables to determine which were the most significant, than that subset of variables was run again on their own.
+Initially some generalized linear models were ran with specific variables that would seem the relevant logically. After finding those results, a machine learning method, a decision tree, was used for more specialized conclusions and predictive modeling. The decision tree [@fig-result5] was developed initially that illustrated simple predictive variables leading to the strata of life expectancy. A multivariate linear regression was ran with all of the variables to determine which were the most significant, than that subset of variables was run again on their own.
 
 
 {{< pagebreak >}}
@@ -150,11 +150,11 @@ Polio doesn't seem significantly correlated.
 
 ```{r}
 #| label: lm-4
-#| fig-cap: "Linear Regression Results of Measles Cases vs. Life Expectancy"
+#| fig-cap: "Linear Regression Results of HIV/AIDS Cases vs. Life Expectancy"
 #| echo: FALSE
 readRDS("../../results/tidyfitlm4.rds")
 ```
-Measles does not seem significantly correlated with life expectancy.
+Deaths from HIV/AIDS is negatively correlated with life expectancy.
 
 ```{r}
 #| label: lm-5
@@ -178,12 +178,22 @@ readRDS("../../results/tidyfitlm6.rds")
 Here is a decision tree model with the predictions for different stratum of life expectancy.
 ```{r}
 #| label: fig-result5
-#| fig-cap: "Decision tree 2015"
+#| fig-cap: "Decision Tree"
 #| echo: FALSE
 knitr::include_graphics(here("results","treeall.png"))
 ```
 The initial split was on high numbers of HIV and AIDS,then polio into the lower life expectancy strata. If there are low numbers of HIV and AIDS, it further is split into income composition of resources and then adult mortality and child stunting. This a simpler and less nuanced model but has an overall look at the predictive value of the data. 
 
+Out of curiosity, here is also a decision tree for only the data from the year 2015, which had a different configuration with the addition of polio and child stunting but the overall most influential variables were HIV/AIDS, income composition of resources, and adult mortality.
+```{r}
+#| label: fig-result6
+#| fig-cap: "Decision tree 2015"
+#| echo: FALSE
+knitr::include_graphics(here("results","tree2015.png"))
+```
+
+
+Next, a multivariate regression analysis was performed with all of the variables to determine which were the most significant in predicting life expectancy.
 ```{r}
 #| label: fullmodel
 #| fig-cap: "Multivariate Linear Regression with all variables"
@@ -208,13 +218,13 @@ readRDS("../../results/summarymodel2.rds")
 # Discussion
 
 ## Summary and Interpretation
-After cleaning the data and combining the sets, the variables were explored to get an estimate of possible associations to look into further. After determining which variables seemed most important, statistical tests were ran to get a more concrete idea of the actual association. 
+After cleaning the data and combining the sets, the variables were explored to get an estimate of possible associations to look into further. After getting an overall idea of what the data looked like and loose associations, statistical tests were ran to get a more concrete idea of the actual association. These tests and models provided output on what variables had the closest relevance and association to the provided life expectancy.
 
 ## Strengths and Limitations
-Some strengths include how large and expansive the data set is, as it has many variables for nearly every country and with a large range of years. It also comes from a very reliable source, the World Health Organization. A weakness that goes along with that is that it was difficult to work with such a large data set and pick out what the most important things to explore were. Also life expectancy is a nuanced estimate that has to do with a combination of multiple factors and also things that are not included in the available data, so a truly accurate analysis may be out of my reach.
+Some strengths include how large and expansive the data set is, as it has many variables for nearly every country and with a large range of years. It also comes from a very reliable source, the World Health Organization. A weakness that goes along with that is that it was difficult to work with such a large data set and pick out what the most important things to explore were. Also life expectancy is a nuanced estimate that has to do with a combination of multiple factors and also things that are not included in the available data, so a truly accurate analysis may be out of my reach. There was also a fair amount of missing data for some variables, also making it hard to have a fully formed analysis.
 
 ## Conclusions
-_What are the main take-home messages?_
+Both full statistical analyses were in general agreement of adult mortality, income composition of resources, and HIV/AIDS being the most predictive of life expectancy. These could be factors to explore more in the future for more concrete correlations and associations and possibly eventually the targets for improving life expectancy in various parts of the world. The purpose of these results is to be purely exploratory and it has answered the original questions.
 
 
 
